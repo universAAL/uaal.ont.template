@@ -1,0 +1,121 @@
+#parse('common.vm')
+$license()
+package $Package;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.universAAL.middleware.rdf.Resource;
+import org.universAAL.middleware.owl.ManagedIndividual;
+## TODO add Imports
+import $Package *;
+
+/**
+ * ## TODO add comment (in english) from rdfs:label and rdfs:comment
+ */
+ ## TODO resolve super class
+public class $ClassName extends ManagedIndividual {
+
+	public static final String MY_URI = $NAMESPACE + "$!{ClassName}";
+## TODO iterate over Props
+	public static final String PROP_X = TutorialOntology.NAMESPACE + "hasSingleDeviceX";
+
+	public ${ClassName}() {
+		super();
+	}
+
+	public ${ClassName}(String uri) {
+		super(uri);
+	}
+
+	public String getClassURI() {
+		return MY_URI;
+	}
+
+	/**
+	 *  This method is used for serialization purposes, to restrict the amount of
+	 *  information to serialize when forwarding it among nodes.
+	 *  For each property you must return one of {@link Resource\#PROP_SERIALIZATION_FULL},
+	 *  {@link Resource\#PROP_SERIALIZATION_REDUCED}, {@link Resource\#PROP_SERIALIZATION_OPTIONAL}
+	 *  or {@link Resource\#PROP_SERIALIZATION_UNDEFINED}.
+	 *  Refer to their javadoc to see what they mean.
+	 */
+	public int getPropSerializationType(String propURI) {
+## TODO iterate over props, checking if propURI is one of the class props
+## Else call super
+		return PROP_SERIALIZATION_FULL;
+	}
+
+	/**
+	 * Evaluate if an instance of the concept is properly
+	 * built, e.g. if all mandatory fields are present.
+	 */
+	public boolean isWellFormed() {
+## TODO iterate over Manadatory props, check if exsits
+		return true;
+	}
+
+## TODO Iterate over Property Getters and Setters
+## case cardinality 0:1 1:1
+## case boolean (is_)
+	public Device getX() {
+		return (Device) props.get(PROP_X);
+	}
+
+	public void setX(Device dev) {
+		props.put(PROP_X, dev);
+	}
+## case cardinality 0:n 1:n
+	public Sensor[] getX() {
+		Object propList = props.get(PROP_X);
+		if (propList instanceof List) {
+			return (Sensor[]) ((List) propList).toArray(new Sensor[0]);
+		} else {
+			List returnList = new ArrayList();
+			if (propList != null)
+				returnList.add((Sensor) propList);
+			return (Sensor[]) returnList.toArray(new Sensor[0]);
+		}
+	}
+
+	public void setX(Sensor[] sens) {
+		List propList = new ArrayList(sens.length);
+		for (int i = 0; i < sens.length; i++) {
+			propList.add(sens[i]);
+		}
+		props.put(PROP_X, propList);
+	}
+
+	public List listX() {
+		Object propList = props.get(PROP_X);
+		if (propList instanceof List) {
+			return propList;
+		} else {
+			List returnList = new ArrayList();
+			if (propList != null)
+				returnList.add((Sensor) propList);
+			return returnList;
+		}
+	}
+
+	public void addX(Sensor sens) {
+		Object propList = props.get(PROP_X);
+		if (propList instanceof List) {
+			List list = (List) propList;
+			list.add(sens);
+			props.put(PROP_X, list);
+		} else if (propList == null) {
+			props.put(PROP_X, sens);
+		} else {
+			List list = new ArrayList();
+			list.add((Sensor) propList);
+			list.add(sens);
+			props.put(PROP_X, list);
+		}
+	}
+
+	public void removeX(Sensor sens) {
+
+	}
+
+}
