@@ -1,4 +1,6 @@
 #parse('common.vm')
+#set( $ClassName = ${class.getIRI().getFragment()})
+#set( $Package = ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()} )
 $license()
 package $Package;
 
@@ -18,8 +20,17 @@ public class $ClassName extends ManagedIndividual {
 
 	public static final String MY_URI = $NAMESPACE + "$!{ClassName}";
 ## TODO iterate over Props
-	public static final String PROP_X = TutorialOntology.NAMESPACE + "hasSingleDeviceX";
 
+#foreach( $prop in ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN))
+#if($prop.getDomain().equals(cls))
+	public static final String PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()} = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+#end
+#end
+#foreach( $prop in ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN))
+#if($prop.getDomain().equals(cls))
+	public static final String PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()} = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+#end
+#end
 	public ${ClassName}() {
 		super();
 	}
@@ -56,66 +67,79 @@ public class $ClassName extends ManagedIndividual {
 	}
 
 ## TODO Iterate over Property Getters and Setters
+#foreach( $prop in ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN))
+#if($prop.getDomain().equals(cls))
+#if($prop.maxCardinality == 1 || $prop.exactCardinality == 1)
 ## case cardinality 0:1 1:1
-## case boolean (is_)
-	public Device getX() {
-		return (Device) props.get(PROP_X);
+	public $prop.range get$propName() {
+		return ($prop.range) props.get($propDEF);
 	}
 
-	public void setX(Device dev) {
-		props.put(PROP_X, dev);
+	public void setX($prop.range arg) {
+		props.put($propDEF, arg);
 	}
+#else
 ## case cardinality 0:n 1:n
-	public Sensor[] getX() {
-		Object propList = props.get(PROP_X);
+	public $prop.range[] get$propName() {
+		Object propList = props.get($propDEF);
 		if (propList instanceof List) {
-			return (Sensor[]) ((List) propList).toArray(new Sensor[0]);
+			return ($prop.range[]) ((List) propList).toArray(new Sensor[0]);
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
-				returnList.add((Sensor) propList);
-			return (Sensor[]) returnList.toArray(new Sensor[0]);
+				returnList.add(($prop.range) propList);
+			return ($prop.range[]) returnList.toArray(new $prop.range[0]);
 		}
 	}
 
-	public void setX(Sensor[] sens) {
-		List propList = new ArrayList(sens.length);
-		for (int i = 0; i < sens.length; i++) {
-			propList.add(sens[i]);
+	public void set$propName(Sensor[] arg) {
+		List propList = new ArrayList(arg.length);
+		for (int i = 0; i < arg.length; i++) {
+			propList.add(arg[i]);
 		}
-		props.put(PROP_X, propList);
+		props.put($propDEF, propList);
 	}
 
-	public List listX() {
-		Object propList = props.get(PROP_X);
+	public List list$propName() {
+		Object propList = props.get($propDEF);
 		if (propList instanceof List) {
 			return propList;
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
-				returnList.add((Sensor) propList);
+				returnList.add(($prop.range) propList);
 			return returnList;
 		}
 	}
 
-	public void addX(Sensor sens) {
-		Object propList = props.get(PROP_X);
+	public void add$propName($prop.range arg) {
+		Object propList = props.get($propDEF);
 		if (propList instanceof List) {
 			List list = (List) propList;
-			list.add(sens);
-			props.put(PROP_X, list);
+			list.add(arg);
+			props.put($propDEF, list);
 		} else if (propList == null) {
-			props.put(PROP_X, sens);
+			props.put($propDEF, arg);
 		} else {
 			List list = new ArrayList();
-			list.add((Sensor) propList);
+			list.add(($prop.range) propList);
 			list.add(sens);
-			props.put(PROP_X, list);
+			props.put($propDEF, list);
 		}
 	}
 
-	public void removeX(Sensor sens) {
+	public void remove$propName(Sensor sens) {
 
 	}
+
+#end
+#end
+#foreach( $prop in ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN))
+#if($prop.getDomain().equals(cls))
+
+## subcase 1:1 0:1, boolean (is_)
+#end
+
+
 
 }
