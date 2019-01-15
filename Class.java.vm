@@ -1,8 +1,7 @@
-#parse('common.vm')
-#set( $ClassName = ${class.getIRI().getFragment()})
-#set( $Package = ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()} )
+#parse('common.vm')##
+#set( $AxiomType = $Object.class.forName('org.semanticweb.owlapi.model.AxiomType'))##
 $license()
-package $Package;
+package $package($ontology);
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,32 +9,33 @@ import java.util.List;
 import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.owl.ManagedIndividual;
 ## TODO add Imports
-import $Package *;
+import $package($ontology) *;
 
 /**
  * ## TODO add comment (in english) from rdfs:label and rdfs:comment
  */
  ## TODO resolve super class
-public class $ClassName extends ManagedIndividual {
+public class $className($class) extends ManagedIndividual {
 
-	public static final String MY_URI = $NAMESPACE + "$!{ClassName}";
+## TODO check and use NAMESPACE If possible
+	public static final String MY_URI = "$!{class.getIRI().getShortForm()}";
 ## TODO iterate over Props
 
-#foreach( $prop in ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN))
+#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )##
+#if($prop.getDomain().equals($class))##
+	public static final String $propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+#end##
+#end##
+#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals(cls))
-	public static final String PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()} = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+	public static final String $propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
 #end
 #end
-#foreach( $prop in ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN))
-#if($prop.getDomain().equals(cls))
-	public static final String PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()} = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
-#end
-#end
-	public ${ClassName}() {
+	public $className($class)() {
 		super();
 	}
 
-	public ${ClassName}(String uri) {
+	public $className($class)(String uri) {
 		super(uri);
 	}
 
@@ -66,80 +66,91 @@ public class $ClassName extends ManagedIndividual {
 		return true;
 	}
 
-## TODO Iterate over Property Getters and Setters
-#foreach( $prop in ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN))
-#if($prop.getDomain().equals(cls))
-#if($prop.maxCardinality == 1 || $prop.exactCardinality == 1)
+## Iterate over Property Getters and Setters
+#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
+#if($prop.getDomain().equals($class))
+#set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
+#set( $propName = "${propName.substring(0, 1).toUpperCase()}$propName.substring(1)")
+## TODO determine max cardinality
+## TODO determine rangeType
+#if($maxCardinality == 1)
 ## case cardinality 0:1 1:1
-	public $prop.range get$propName() {
-		return ($prop.range) props.get($propDEF);
+	public $prangeType get$propName() {
+		return ($rangeType) props.get($propVar($prop));
 	}
 
-	public void setX($prop.range arg) {
-		props.put($propDEF, arg);
+	public void setX($rangeType arg) {
+		props.put($propVar($prop), arg);
 	}
 #else
 ## case cardinality 0:n 1:n
-	public $prop.range[] get$propName() {
-		Object propList = props.get($propDEF);
+	public ${rangeType}[] get$propName() {
+		Object propList = props.get($propVar($prop));
 		if (propList instanceof List) {
-			return ($prop.range[]) ((List) propList).toArray(new Sensor[0]);
+			return (${rangeType}[]) ((List) propList).toArray(new Sensor[0]);
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
-				returnList.add(($prop.range) propList);
-			return ($prop.range[]) returnList.toArray(new $prop.range[0]);
+				returnList.add(($rangeType) propList);
+			return (${rangeType}[]) returnList.toArray(new $rangeType[0]);
 		}
 	}
 
-	public void set$propName(Sensor[] arg) {
+	public void set$propName(${rangeType}[] arg) {
 		List propList = new ArrayList(arg.length);
 		for (int i = 0; i < arg.length; i++) {
 			propList.add(arg[i]);
 		}
-		props.put($propDEF, propList);
+		props.put($propVar($prop), propList);
 	}
 
 	public List list$propName() {
-		Object propList = props.get($propDEF);
+		Object propList = props.get($propVar($prop));
 		if (propList instanceof List) {
 			return propList;
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
-				returnList.add(($prop.range) propList);
+				returnList.add(($rangeType) propList);
 			return returnList;
 		}
 	}
 
-	public void add$propName($prop.range arg) {
-		Object propList = props.get($propDEF);
+	public void add$propName($rangeType arg) {
+		Object propList = props.get($propVar($prop));
 		if (propList instanceof List) {
 			List list = (List) propList;
 			list.add(arg);
-			props.put($propDEF, list);
+			props.put($propVar($prop), list);
 		} else if (propList == null) {
-			props.put($propDEF, arg);
+			props.put($propVar($prop), arg);
 		} else {
 			List list = new ArrayList();
-			list.add(($prop.range) propList);
-			list.add(sens);
-			props.put($propDEF, list);
+			list.add(($rangeType) propList);
+			list.add(arg);
+			props.put($propVar($prop), list);
 		}
 	}
 
-	public void remove$propName(Sensor sens) {
-
+	public void remove$propName($rangeType arg) {
+		Object propList = props.get($propVar($prop));
+		if (propList instanceof List){
+			List list = (List) propList;
+			list.remove(arg);
+			props.put($propVar($prop), list);
+		} else if (propList == arg) {
+			props.remove($propVar($prop));
+		}
 	}
 
 #end
 #end
-#foreach( $prop in ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN))
-#if($prop.getDomain().equals(cls))
+#end
+#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
+#if($prop.getDomain().equals($class))
 
 ## subcase 1:1 0:1, boolean (is_)
 #end
-
-
+#end
 
 }

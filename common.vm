@@ -20,3 +20,12 @@
  */
 #end
 #end
+#macro( package $ontology)
+${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
+#end
+#macro( className $class)
+${class.getIRI().getFragment()}
+#end
+#macro( propVar $prop)
+PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
+#end
