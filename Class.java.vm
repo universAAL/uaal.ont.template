@@ -143,7 +143,7 @@ public ${rangeType}[] get$propName() {
 #set( $propName = "${propName.substring(0, 1).toUpperCase()}$propName.substring(1)")
 ## TODO determine max cardinality (including Exact)
 ## TODO determine rangeType
-$ragneType = "Object";
+$ragneType = "ManagedIndividual";
 #if($maxCardinality == 1)
 ## case cardinality 0:1 1:1
 $propGet($propName $rangeType "$propVar($prop)")
@@ -157,6 +157,7 @@ $propList($propName $rangeType "$propVar($prop)")
 #if($prop.getDomain().equals($class))
 ## TODO determine max cardinality
 ## TODO determine rangeType
+$ragneType = "Object";
 #if($maxCardinality == 1)
 #if($rangeType == "Boolean")
 ## subcase 1:1 0:1, boolean (is_)
