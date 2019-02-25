@@ -1,7 +1,8 @@
 ## define common variables such as
-#macro( license )
-#if ($isASL2)/*
-	Copyright $year $License-holder
+#macro( license )##
+#if ($isASL2)##
+/*
+	Copyright $Date.getYear() $License-holder
 
 	See the NOTICE file distributed with this work for additional
 	information regarding copyright ownership
@@ -18,14 +19,22 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-#end
-#end
-#macro( package $ontology)
+#end##
+#end##
+#macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
-#end
-#macro( className $class)
+#end##
+#macro( className $class)##
 ${class.getIRI().getFragment()}
-#end
-#macro( propVar $prop)
+#end##
+#macro( propVar $prop)##
 PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
-#end
+#end##
+#macro( ontClassName $ontology)##
+##TODO ensure first letter is upper case.
+${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
+#end##
+#macro( ontFactory $ontology)##
+##TODO ensure first letter is upper case.
+${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
+#end##

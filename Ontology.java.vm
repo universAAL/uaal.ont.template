@@ -1,25 +1,6 @@
-/*
-	Copyright 2008-2014 ITACA-TSB, http://www.tsb.upv.es
-	Instituto Tecnologico de Aplicaciones de Comunicacion
-	Avanzadas - Grupo Tecnologias para la Salud y el
-	Bienestar (TSB)
-
-	See the NOTICE file distributed with this work for additional
-	information regarding copyright ownership
-
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at
-
-	  http://www.apache.org/licenses/LICENSE-2.0
-
-	Unless required by applicable law or agreed to in writing, software
-	distributed under the License is distributed on an "AS IS" BASIS,
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	See the License for the specific language governing permissions and
-	limitations under the License.
- */
-package org.universAAL.ontology.tutorial;
+#parse('common.vm')##
+$license()
+package $package($ontology);
 
 import org.universAAL.middleware.owl.DataRepOntology;
 import org.universAAL.middleware.owl.ManagedIndividual;
@@ -28,37 +9,30 @@ import org.universAAL.middleware.owl.OntClassInfoSetup;
 import org.universAAL.middleware.owl.Ontology;
 import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.rdf.TypeMapper;
-import org.universAAL.ontology.TutorialFactory;
-import org.universAAL.ontology.phThing.Device;
-import org.universAAL.ontology.phThing.PhThingOntology;
-import org.universAAL.ontology.device.Sensor;
+import ${PackageBase}.$ontFactory($ontology);
 
-//This is the main central class where you actually define the restrictions and
-//relations between your concepts. It�s like a representation of an OWL file.
-//You can have as many of these classes as you want in your bundle,
-//but in general one is enough.
-public class TutorialOntology extends Ontology {
+##TODO add javadoc
+public class $ontClassName($ontology) extends Ontology {
 	// The factory is used for serialization
-	private static TutorialFactory factory = new TutorialFactory();
+	private static $ontFactory($ontology) factory = new ${ $ontFactory($ontology)}();
 	// Namespaces must follow this format
-	public static final String NAMESPACE = "http://ontology.universAAL.org/Tutorial.owl#";
+	public static final String NAMESPACE = "${ontology.getOntologyID().getOntologyIRI().get().getNamespace()}";
 
-	public TutorialOntology(String ontURI) {
+	public $ontClassName($ontology)(String ontURI) {
 		super(ontURI);
-		// This constructor should always be like this
 	}
 
-	public TutorialOntology() {
+	public $ontClassName($ontology)() {
 		super(NAMESPACE);
-		// This constructor should always be like this
 	}
 
-	// This is where you actually define the relationships and restrictions
 	public void create() {
+	##Ontology level
 		// First create the information for the whole ontology
 		Resource r = getInfo();
 		r.setResourceComment("A comment describing the whole ontology");
 		r.setResourceLabel("Human Readable label for the ontology");
+
 		// You must add an import for every ontology domain you use in your
 		// concepts
 		// We add DataRepresentation domain because we use ManagedIndividuals
@@ -66,6 +40,23 @@ public class TutorialOntology extends Ontology {
 		// We add phThing because we use basic Devices
 		addImport(PhThingOntology.NAMESPACE);
 
+	## Abstract Classes
+
+	## Enumerations
+	// load MyEnumeration_________________________
+		// Because enumerations cannot be instantiated you must use the
+		// createNewAbstract... method, which does not require factory nor ID
+		oci = createNewAbstractOntClassInfo(MyEnumeration.MY_URI);
+		oci.setResourceComment("A comment describing what this concept is used for");
+		oci.setResourceLabel("Human readable ID for the concept. e.g: 'My Enumeration'");
+		oci.addSuperClass(ManagedIndividual.MY_URI);
+
+		// When creating enumerations you just need to list the possible values
+		// in this method
+		oci.toEnumeration(new ManagedIndividual[] { MyEnumeration.option1, MyEnumeration.option2, MyEnumeration.option3,
+				MyEnumeration.option4, MyEnumeration.option5 });
+
+	## Classes
 		// This is the information object that you can reuse for all your
 		// concepts
 		OntClassInfoSetup oci;
@@ -87,6 +78,7 @@ public class TutorialOntology extends Ontology {
 		// After the main information you must declare the properties and the
 		// restrictions
 
+		## ObjectProperties
 		// This restriction means that in this property there must be a Device
 		// concept, with cardinality 1:1 (a mandatory single Device).
 		// SetFunctional means it can only have one value (max cardinality is 1)
@@ -99,29 +91,12 @@ public class TutorialOntology extends Ontology {
 		oci.addObjectProperty(MyConcept.PROP_Y_CONCEPT_LIST);
 		oci.addRestriction(MergedRestriction.getAllValuesRestriction(MyConcept.PROP_Y_CONCEPT_LIST, Sensor.MY_URI));
 
+		## DataProperties
 		// If the concept in the property has to be a literal (boolean,string,
 		// int...) make use of adDatatype and then TypeMapper to get its URI. In
 		// this case the cardinality is "optional" (0 or 1)
 		oci.addDatatypeProperty(MyConcept.PROP_Z_LITERAL_OPTIONAL).setFunctional();
 		oci.addRestriction(MergedRestriction.getAllValuesRestrictionWithCardinality(MyConcept.PROP_Z_LITERAL_OPTIONAL,
 				TypeMapper.getDatatypeURI(Long.class), 0, 1));
-
-		// There are other methods to declare restrictions, and even construct
-		// more complex ones, but these are the most commonly used. You can also
-		// restrict on properties you inherit from parent concepts.
-
-		// load MyEnumeration_________________________
-		// Because enumerations cannot be instantiated you must use the
-		// createNewAbstract... method, which does not require factory nor ID
-		oci = createNewAbstractOntClassInfo(MyEnumeration.MY_URI);
-		oci.setResourceComment("A comment describing what this concept is used for");
-		oci.setResourceLabel("Human readable ID for the concept. e.g: 'My Enumeration'");
-		oci.addSuperClass(ManagedIndividual.MY_URI);
-
-		// When creating enumerations you just need to list the possible values
-		// in this method
-		oci.toEnumeration(new ManagedIndividual[] { MyEnumeration.option1, MyEnumeration.option2, MyEnumeration.option3,
-				MyEnumeration.option4, MyEnumeration.option5 });
-
 	}
 }

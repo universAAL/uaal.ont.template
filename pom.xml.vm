@@ -6,21 +6,13 @@
     <groupId>org.universAAL.ontology</groupId>
     <artifactId>ont.pom</artifactId>
     <version>3.4.2-SNAPSHOT</version>
-    <relativePath>../../../ontology/ont.pom</relativePath>
   </parent>
-  <artifactId>ont.tutorial</artifactId>
-  <version>3.4.2-SNAPSHOT</version>
+  <artifactId>$mavenArtifactID</artifactId>
   <packaging>bundle</packaging>
-  <name>universAAL Samples Ontology Tutorial Example</name>
-  <description>This example shows how to convert an ontology concept into its java representation for uAAL</description>
   <dependencies>
     <dependency>
       <groupId>org.universAAL.middleware</groupId>
-      <artifactId>mw.data.representation.osgi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.universAAL.ontology</groupId>
-      <artifactId>ont.device</artifactId>
+      <artifactId>mw.data.representation.core</artifactId>
     </dependency>
   </dependencies>
   <repositories>
@@ -41,9 +33,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Description>${project.description}</Bundle-Description>
-            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>\${project.name}</Bundle-Name>
+            <Bundle-Description>\${project.description}</Bundle-Description>
+            <Bundle-SymbolicName>\${project.artifactId}</Bundle-SymbolicName>
             <Export-Package>org.universAAL.ontology.tutorial</Export-Package>
             <Private-Package>org.universAAL.ontology;-split-package:=first</Private-Package>
           </instructions>
