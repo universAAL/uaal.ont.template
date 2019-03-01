@@ -25,11 +25,12 @@
 		<configuration>
 			<xmlTemplate>${project.basedir}/../MavenProject.xml</xmltemplate>
 			<outputDirectory>${project.build.directory}</outputDirectory>
-			<remoteOntologies> 
-				<ontology>https://www.w3.org/ns/ssn/</ontology>
+			<remoteOntologies>
+				<!--  <ontology>https://www.w3.org/ns/ssn/</ontology>-->
+				<ontology>https://protege.stanford.edu/ontologies/pizza/pizza.owl</ontology>
 			<remoteOntologies>
 			<variables>
-				
+
 			</variables>
 		</configuration>
       </plugin>

@@ -21,11 +21,10 @@
 		<macro>
 			<template>Class.java.vm</template>
 			<for>class</for>
-			<output>src/main/java/${
-				PackageBase.replace(".","/")
-				}/${
-				ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()
-				}/${class.getIRI().getFragment()}.java
+			<output>#parse('common.vm')src/main/java/${
+				package($onotology).replace(".","/")
+				}/
+				${className($class)}.java
 			</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>

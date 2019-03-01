@@ -28,18 +28,14 @@ public class $ontClassName($ontology) extends Ontology {
 
 	public void create() {
 	##Ontology level
-		// First create the information for the whole ontology
-		Resource r = getInfo();
-		r.setResourceComment("A comment describing the whole ontology");
-		r.setResourceLabel("Human Readable label for the ontology");
+		##TODO: add comment and label for Ontology
+		##Resource r = getInfo();
+		##r.setResourceComment("A comment describing the whole ontology");
+		##r.setResourceLabel("Human Readable label for the ontology");
 
-		// You must add an import for every ontology domain you use in your
-		// concepts
-		// We add DataRepresentation domain because we use ManagedIndividuals
-		addImport(DataRepOntology.NAMESPACE);
-		// We add phThing because we use basic Devices
-		addImport(PhThingOntology.NAMESPACE);
-
+		#foreach( $import in ${ontology.getImports()})##
+		addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
+		#end
 	## Abstract Classes
 
 	## Enumerations
