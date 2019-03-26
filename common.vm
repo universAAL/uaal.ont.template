@@ -24,7 +24,7 @@
 #macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
 #end##
-#macro( className $class)##
+#macro( className $class)## TODO ensure first letter is upper case
 ${class.getIRI().getFragment()}
 #end##
 #macro( propVar $prop)##
@@ -37,4 +37,7 @@ ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
 #macro( ontFactory $ontology)##
 ##TODO ensure first letter is upper case.
 ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
+#end##
+#macro( isEnumerationAxiom $axiom)##
+
 #end##

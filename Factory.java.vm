@@ -13,11 +13,14 @@ public class $ontFactory($ontology) implements ResourceFactory {
 	// like this
 	public Resource createInstance(String classURI, String instanceURI, int factoryIndex) {
 		switch (factoryIndex) {
-		// For each ID that you may receive (You declare the IDs in the main
-		// ontology class) you must return an instance of the appropriate
-		// concept class for that ID
-		case 0:
-			return new MyConcept(instanceURI);
+	#foreach( $axiom in ${ontology.getAxioms()})
+	#if(${axiom.isOfType(AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()})##
+		OntClassInfoSetup oci_${ $className($axiom.getEntity())} = createNewOntClassInfo(
+		${ $className ($axiom.getEntity())}.MY_URI, factory, $foreach.index ) ;
+		case ${foreach.index}:
+			return new ${ $className($axiom.getEntity())}(instanceURI);
+	#end
+	#end
 		}
 		return null;
 	}

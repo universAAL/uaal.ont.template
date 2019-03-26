@@ -52,6 +52,10 @@
 				PackageBase.replace(".","/")
 				}/${ontology.getIRI().getFragment()}.java
 			</output>
+			<imports>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
+			</imports>
 		</macro>
 
 		<macro>
