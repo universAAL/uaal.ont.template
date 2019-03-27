@@ -17,7 +17,7 @@ import org.universAAL.middleware.owl.ManagedIndividual;
 public class #className($class) extends ManagedIndividual {
 
 ## TODO check and use NAMESPACE If possible
-	public static final String MY_URI = "$!{class.getIRI().getShortForm()}";
+	public static final String MY_URI = "$!{class.getIRI()}";
 ## TODO iterate over Props
 
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )

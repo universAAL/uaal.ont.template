@@ -1,8 +1,9 @@
 ## define common variables such as
 #macro( license )
 #if ($isASL2)
+#set( $YEAR = $Date.getYear() + 1900)
 /*
-	Copyright $Date.getYear() $License-holder
+	Copyright $YEAR $License-holder
 
 	See the NOTICE file distributed with this work for additional
 	information regarding copyright ownership
