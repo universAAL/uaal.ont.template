@@ -43,7 +43,12 @@ ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
 ##TODO ensure first letter is upper case.
 ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
 #end
-## =========== determine if an axion corresponds to an enumeration axiom, returns "true".
-#macro( isEnumerationAxiom $axiom)##
+## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
+#macro( isEnumeration $class)##
+
+#end
+## =========== determine the enumeration idividuals,
+## returns nothing, sets the varible $enum as an array list of namedindividuals.
+#macro( getEnum $class)##
 
 #end##

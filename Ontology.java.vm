@@ -38,18 +38,18 @@ public class #ontClassName($ontology) extends Ontology {
 	## Abstract Classes
 	## there are not OWL specification for Abstract Classes, this is used only for Enumerations
 	## Enumerations
-	#set( $enum = [])##
+	#set( $enums = [])##
 	#foreach( $axiom in ${ontology.getAxioms()})
-	#if ( "#isEnumerationAxiom($axiom)"  == "true")
-		#set( $exe = ${enum.add($axiom.getEntity())})
-		OntClassInfoSetup oci_#className($axiom.getEntity()) = createNewAbstractOntClassInfo(#className(${axiom.getEntity()}).MY_URI);
-		oci_#className($axiom.getEntity()).addSuperClass(ManagedIndividual.MY_URI);
-		oci_#className($axiom.getEntity()).toEnumeration(new ManagedIndividual[] {
-		#foreach($enumInd in ??) ## TODO get Enumeration individuals
+	#if ( "#isEnumeration(${axiom.getEntity()})"  == "true")
+		#set( $exe = ${enums.add(${axiom.getEntity()})})
+		OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewAbstractOntClassInfo(#className(${axiom.getEntity()}).MY_URI);
+		oci_#className(${axiom.getEntity()}).addSuperClass(ManagedIndividual.MY_URI);
+		oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
+		#getEnum(${axiom.getEntity()})
+		#foreach($enumInd in $enum) ## TODO get Enumeration individuals
 				#className($axiom.getEntity()).$enumInd,
 		#end
 				});
-	#end
 	#end
 	#end
 
