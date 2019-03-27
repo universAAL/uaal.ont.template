@@ -1,4 +1,4 @@
-##oci_${ $className ($axiom.getEntity())}
+##oci_${ #className ($axiom.getEntity())}
 		#foreach ( $clsAxiom in $ontology.getAxioms($class))##
 			##Check for class annotations
 			##oci.setResourceComment("A comment describing what this concept is used for");

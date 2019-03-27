@@ -36,7 +36,10 @@
             <Bundle-Name>\${project.name}</Bundle-Name>
             <Bundle-Description>\${project.description}</Bundle-Description>
             <Bundle-SymbolicName>\${project.artifactId}</Bundle-SymbolicName>
-            <Export-Package>org.universAAL.ontology.tutorial</Export-Package>
+            #parse('common.vm')
+            <Export-Package>#foreach($ont in ${project.getOntologies()})
+			#package($ontology),
+			#end</Export-Package>
             <Private-Package>org.universAAL.ontology;-split-package:=first</Private-Package>
           </instructions>
         </configuration>

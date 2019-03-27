@@ -1,40 +1,40 @@
-#parse('common.vm')##
-$license()
-package $package($ontology);
+#parse('common.vm')
+#license()
+package #package($ontology);
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.owl.ManagedIndividual;
-## TODO add Imports
-import ${ $package($ontology)}.*;
+
 
 /**
- * ## TODO add comment (in english) from rdfs:label and rdfs:comment
+ * ## TODO add comment (in english) from rdfs:label and/or rdfs:comment
+ ## TODO Also add Template generation comment.
  */
  ## TODO resolve super class
-public class $className($class) extends ManagedIndividual {
+public class #className($class) extends ManagedIndividual {
 
 ## TODO check and use NAMESPACE If possible
 	public static final String MY_URI = "$!{class.getIRI().getShortForm()}";
 ## TODO iterate over Props
 
-#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )##
-#if($prop.getDomain().equals($class))##
-	public static final String $propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
-#end##
-#end##
+#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
+#if($prop.getDomain().equals($class))
+	public static final String #propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+#end
+#end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals(cls))
-	public static final String $propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+	public static final String #propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
 #end
 #end
-	public $className($class)() {
+	public #className($class)() {
 		super();
 	}
 
-	public $className($class)(String uri) {
+	public #className($class)(String uri) {
 		super(uri);
 	}
 
@@ -74,7 +74,8 @@ public class $className($class) extends ManagedIndividual {
 	public void setX($rangeType arg) {
 		props.put($propVar, arg);
 	}
-#end##
+#end
+##
 #macro( propList $propName $rangeType $propVar)##
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
@@ -129,9 +130,9 @@ public ${rangeType}[] get$propName() {
 		if (propList instanceof List){
 			List list = (List) propList;
 			list.remove(arg);
-			props.put($propVar($prop), list);
+			props.put(#propVar($prop), list);
 		} else if (propList == arg) {
-			props.remove($propVar($prop));
+			props.remove(#propVar($prop));
 		}
 	}
 #end##
@@ -142,13 +143,13 @@ public ${rangeType}[] get$propName() {
 #set( $propName = "${propName.substring(0, 1).toUpperCase()}$propName.substring(1)")
 ## TODO determine max cardinality (including Exact)
 ## TODO determine rangeType
-$ragneType = "ManagedIndividual";
+#set($ragneType = "ManagedIndividual")
 #if($maxCardinality == 1)
 ## case cardinality 0:1 1:1
-$propGet($propName $rangeType "$propVar($prop)")
+#propGet($propName $rangeType "#propVar($prop)")
 #else
 ## case cardinality 0:n 1:n
-$propList($propName $rangeType "$propVar($prop)")
+#propList($propName $rangeType "#propVar($prop)")
 #end
 #end
 #end
@@ -156,28 +157,28 @@ $propList($propName $rangeType "$propVar($prop)")
 #if($prop.getDomain().equals($class))
 ## TODO determine max cardinality
 ## TODO determine rangeType
-$ragneType = "Object";
+##set ($ragneType = "Object")
 #if($maxCardinality == 1)
 #if($rangeType == "Boolean")
 ## subcase 1:1 0:1, boolean (is_)
 	public boolean is$propName() {
-		return (($rangeType) props.get($propVar($prop))).booleanValue();
+		return (($rangeType) props.get(#propVar($prop))).booleanValue();
 	}
 
 	public void setX($rangeType arg) {
-		props.put($propVar($prop), arg);
+		props.put(#propVar($prop), arg);
 	}
 
 	public void setX(boolean arg) {
-		props.put($propVar($prop), Boolean.valueOf(arg));
+		props.put(#propVar($prop), Boolean.valueOf(arg));
 	}
 #else##
 ## genericcase cardinality 0:1 1:1
-$propGet($propName $rangeType "$propVar($prop)")
+#propGet($propName $rangeType "#propVar($prop)")
 #end
 #else
 ## case cardinality 0:n 1:n
-$propList($propName $rangeType "$propVar($prop)")
+#propList($propName $rangeType "#propVar($prop)")
 #end
 #end
 #end

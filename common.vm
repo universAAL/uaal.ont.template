@@ -1,6 +1,6 @@
 ## define common variables such as
-#macro( license )##
-#if ($isASL2)##
+#macro( license )
+#if ($isASL2)
 /*
 	Copyright $Date.getYear() $License-holder
 
@@ -19,25 +19,31 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-#end##
-#end##
+#end
+#end
+## =========== get the package for the ontology
 #macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
-#end##
+#end
+## =========== get the java className for a given Ont Class
 #macro( className $class)## TODO ensure first letter is upper case
 ${class.getIRI().getFragment()}
-#end##
+#end
+## =========== get the Attribute string reffering to a property
 #macro( propVar $prop)##
 PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
-#end##
+#end
+## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
 ##TODO ensure first letter is upper case.
 ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
-#end##
+#end
+## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
 ##TODO ensure first letter is upper case.
 ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
-#end##
+#end
+## =========== determine if an axion corresponds to an enumeration axiom, returns "true".
 #macro( isEnumerationAxiom $axiom)##
 
 #end##

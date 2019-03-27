@@ -23,8 +23,7 @@
 			<for>class</for>
 			<output>#parse('common.vm')src/main/java/${
 				package($onotology).replace(".","/")
-				}/
-				${className($class)}.java
+				}/${className($class)}.java
 			</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
@@ -44,6 +43,9 @@
 				ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()
 				}/${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology.java
 			</output>
+			<imports>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+			</imports>
 		</macro>
 		<macro>
 			<template>Factory.java.vm</template>
