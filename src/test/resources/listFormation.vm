@@ -1,0 +1,9 @@
+#macro( foo $var)
+${var}~${var}##
+#end
+#set( $list = [])
+#set( $exec = ${list.add("a")})
+#set( $exec = ${list.add("b")})
+#set( $exec = ${list.add("#foo ('la')")})
+$list
+$list.get(0)

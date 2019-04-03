@@ -21,18 +21,9 @@
 	limitations under the License.
  */
 #end
-#end
 ## =========== get the package for the ontology
 #macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
-#end
-## =========== get the java className for a given Ont Class
-#macro( className $class)## TODO ensure first letter is upper case
-${class.getIRI().getFragment()}
-#end
-## =========== get the Attribute string reffering to a property
-#macro( propVar $prop)##
-PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
 #end
 ## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
@@ -44,12 +35,55 @@ ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
 ##TODO ensure first letter is upper case.
 ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
 #end
+#end
+## =========== resolve URI with NAMESPACE, if possible
+#macro( resolveURI $URI $ontology)
+#set( $ontNAMESPACE = "${ontology.getOntologyID().getOntologyIRI().get().getNamespace()}")
+#if( $URI.startsWith($ontNAMESPACE))
+#ontClassName($ontology) + "$URI.substring($ontNAMESPACE.length())"
+#else
+"$URI"
+#end
+#end
+## =========== get the java className for a given Ont Class
+#macro( className $class)## TODO ensure first letter is upper case
+${class.getIRI().getFragment()}
+#end
+## =========== get the Attribute string reffering to a property
+#macro( propVar $prop)##
+PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
+#end
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
-
+#set( $res = "false")
+#foreach($a in ${ontology.getAxioms($class)})
+	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
+		#foreach ($ce in ${a.getClassExpressions()})
+			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )
+				#set( $res = "true")
+			#end
+		#end
+	#end
+#end
+$res
 #end
 ## =========== determine the enumeration idividuals,
 ## returns nothing, sets the varible $enum as an array list of namedindividuals.
 #macro( getEnum $class)##
-
-#end##
+#set( $enum = [])
+#foreach($a in ${ontology.getAxioms($class)})
+	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
+		#foreach ($ce in ${a.getClassExpressions()})
+			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )
+				#foreach( $ind in ${ce.getIndividuals()})
+					#set( $exec = ${enum.add($ind)})
+				#end
+			#end
+		#end
+	#end
+#end
+#end
+## ============ template stamp
+#macro ( templateStamp)
+Created on $Date using ${project.getMainModel().getName()} template, version ${project.getMainModel().getVersion()}
+#end

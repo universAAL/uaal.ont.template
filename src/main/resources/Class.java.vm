@@ -12,22 +12,46 @@ import org.universAAL.middleware.owl.ManagedIndividual;
 /**
  * ## TODO add comment (in english) from rdfs:label and/or rdfs:comment
  ## TODO Also add Template generation comment.
+ * #templateStamp()
  */
- ## TODO resolve super class
-public class #className($class) extends ManagedIndividual {
+ ## resolve super class
+ #macro( resolveSuperClass $class)
+#set( $result = [])
+#set( $superClasses = "${reasoner.getReasoner().getSuperClasses(cls, true).getNodes()}")
+#if (${superClasses.size()} >= 1)
+	#foreach( $supercls in $superClasses)
+	#if (${ontology.containsClassInSignature($supercls.getIRI())}) {
+		#set ( $exec = ${result.add("#className($supercls)")};
+	#end
+	#else
+		#foreach ($ont in  ${project.getOntologies2BProcesed()}) {
+			#if (${ont.containsClassInSignature($supercls.getIRI())}) {
+				#set ( $exec = ${result.add("#package($ont).#className($supercls)")};
+			#end
+		#end
+	#end
+	#end
+#end
+#if ($result.isEmpty()) {
+	#set($result = "ManagedIndividual")
+#else
+	##TODO: maybe be more intelligent selecting from avilable superclass
+	#set($result = ${result.get(0)}
+#end
+#end
+public class #className($class) extends $result {
 
-## TODO check and use NAMESPACE If possible
-	public static final String MY_URI = "$!{class.getIRI()}";
-## TODO iterate over Props
+	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
+## iterate over Props
 
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 #if($prop.getDomain().equals($class))
-	public static final String #propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
 #end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals(cls))
-	public static final String #propVar($prop) = "${prop.getProperty().getNamedProperty().getIRI().getShortForm()}";
+	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
 #end
 	public #className($class)() {

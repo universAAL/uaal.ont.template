@@ -6,6 +6,10 @@ import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.rdf.ResourceFactory;
 import #package($ontology).*;
 
+/**
+ * Factory Class for ${ontology.getOntologyID().getOntologyIRI().get().getFragment()} Ontology.
+ * #templateStamp()
+ */
 public class #ontFactory($ontology) implements ResourceFactory {
 
 	public Resource createInstance(String classURI, String instanceURI, int factoryIndex) {

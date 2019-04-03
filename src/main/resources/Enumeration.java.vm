@@ -6,23 +6,24 @@ package #package($ontology);
 import org.universAAL.middleware.owl.ManagedIndividual;
 
 /**
- * ## TODO add Javadoc + Template stamp
+## TODO add Javadoc
+ * #templateStamp()
  */
 public class #className($class) extends ManagedIndividual {
 
-	## TODO check and use NAMESPACE If possible
-	public static final String MY_URI = "$!{class.getIRI().getShortForm()}";
+	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 
 	private int order;
 
 	private static final String[] names = {
-	#foreach($enumInd in $enum) ## TODO get Enumeration individuals
+	#getEnum ($class)
+	#foreach($enumInd in $enum)
 					"${axiom.getEntity().getIRI()}",
 	#end
 				};
 
 	// These are all the possible instances of your enumeration: the individuals
-	#foreach($enumInd in $enum) ## TODO get Enumeration individuals
+	#foreach($enumInd in $enum)
 	public static final #className($class) ${enumId.getURI().getFragment().toLowerCase()} = new #className($class)(${foreach.index});
 	#end
 
@@ -31,7 +32,11 @@ public class #className($class) extends ManagedIndividual {
 	 * other members will be created after a call to this method.
 	 */
 	public static ManagedIndividual[] getEnumerationMembers() {
-		return new ManagedIndividual[] { option1, option2, option3, option5, option4 };
+		return new ManagedIndividual[] {
+		#foreach($enumInd in $enum)
+		${enumId.getURI().getFragment().toLowerCase()},
+		#end
+		};
 	}
 
 	// This is used privately. Constructs an individual based on the given

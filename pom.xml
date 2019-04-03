@@ -38,10 +38,16 @@
 		<version>4.5.6</version>
 	    <scope>test</scope>
 	</dependency>
-		<dependency>
+	<dependency>
 	    <groupId>net.sourceforge.owlapi</groupId>
 	    <artifactId>jfact</artifactId>
 	    <version>4.0.4</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+  		<artifactId>codegenerator.core</artifactId>
+   		<groupId>es.upm.tfo.lst</groupId>
+    	<version>0.0.1-SNAPSHOT</version>
 	    <scope>test</scope>
 	</dependency>
   </dependencies>

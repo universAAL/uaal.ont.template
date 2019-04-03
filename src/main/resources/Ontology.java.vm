@@ -11,7 +11,11 @@ import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.rdf.TypeMapper;
 import ${PackageBase}.#ontFactory($ontology);
 
-##TODO add javadoc + Template generation comment
+##TODO add javadoc
+/**
+ *
+ * #templateStamp()
+ */
 public class #ontClassName($ontology) extends Ontology {
 	// The factory is used for serialization
 	private static #ontFactory($ontology) factory = new #ontFactory($ontology)();
@@ -38,7 +42,6 @@ public class #ontClassName($ontology) extends Ontology {
 	## Abstract Classes
 	## there are not OWL specification for Abstract Classes, this is used only for Enumerations
 	## Enumerations
-	#set( $enums = [])##
 	#foreach( $axiom in ${ontology.getAxioms()})
 	#if ( "#isEnumeration(${axiom.getEntity()})"  == "true")
 		#set( $exe = ${enums.add(${axiom.getEntity()})})
@@ -46,7 +49,7 @@ public class #ontClassName($ontology) extends Ontology {
 		oci_#className(${axiom.getEntity()}).addSuperClass(ManagedIndividual.MY_URI);
 		oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
 		#getEnum(${axiom.getEntity()})
-		#foreach($enumInd in $enum) ## TODO get Enumeration individuals
+		#foreach($enumInd in $enum) ## get Enumeration individuals
 				#className($axiom.getEntity()).$enumInd,
 		#end
 				});
@@ -56,16 +59,18 @@ public class #ontClassName($ontology) extends Ontology {
 	## Classes
 	## Declare all Classes first
 	#foreach( $axiom in ${ontology.getAxioms()})
-	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()})
-	##TODO exclude enumerations
+	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
+			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
+	## exclude enumerations
 		OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(
 		#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index} ) ;
 	#end
-	## TODO Maybe create individuals TOO.
+	## TODO create individuals TOO.
 
 	#end
 	#foreach( $axiom in ${ontology.getAxioms()})
-	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()})
+	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
+			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
 		#set($class = ${axiom.getEntity()})
 		#parse("createClass.vm")
 	#end

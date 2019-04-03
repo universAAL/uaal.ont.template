@@ -2,7 +2,7 @@
 <Template xmlns="http://www.example.org/exampleTemplate "
 	xmlns:x="http://www.w3.org/2001/XMLSchema-instance"
 	x:schemaLocation="http://www.example.org/exampleTemplate schema.xsd">
-	<template-name>universAAL Ontology full maven project</template-name>
+	<template-name>universAAL Ontology full maven</template-name>
 	<template-version>3.4.2-SNAPSHOT</template-version>
 	<template-description>Generates a full maven project containing the
 		java clases necesary to represent the ontologies in universAAL

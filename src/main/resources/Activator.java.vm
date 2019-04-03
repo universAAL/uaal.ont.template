@@ -12,6 +12,7 @@ import #package($ontology).#ontClassName($ontology);
 
 /**
  * Main Module Activator.
+ * #templateStamp()
  */
 public class Activator implements ModuleActivator {
 

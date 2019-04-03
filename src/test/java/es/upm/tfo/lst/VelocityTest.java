@@ -84,26 +84,10 @@ public class VelocityTest {
 	}
 
 	@Test
-	public void ifStatementTest() throws IOException {
-		this.template = engine.getTemplate("ifStatementTemplate.vm");
+	public void listFormationTest() throws IOException {
+		this.template = engine.getTemplate("listFormation.vm");
 		this.template.merge(context, writer);
 	}
 
-	@Test
-	public void macroTest() throws IOException{
-		this.template = engine.getTemplate("macroTest.vm");
-		this.template.merge(context, writer);
-	}
-
-	@Test
-	public void importExistentTemplate() {
-
-	}
-
-	@Test
-	public void usingContextContentTest() throws IOException{
-		this.template = engine.getTemplate("contextContent.vm");
-		this.template.merge(context, writer);
-	}
 
 }

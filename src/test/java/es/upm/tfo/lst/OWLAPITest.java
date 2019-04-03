@@ -87,7 +87,7 @@ public class OWLAPITest {
 		System.err.println("================ Start of " + name.getMethodName() + " ================");
 
 	}
-	
+
 	@After
 	public void end() {
 		System.out.flush();
@@ -144,11 +144,8 @@ public class OWLAPITest {
 	@Test
 	public void ontologyClassDeclarations() {
 		System.out.println("ontology.getAxioms()");
-	
-		//en este for tambien da los names individuals y los object properties y las anotations
 		for (OWLAxiom a : AxiomType.getAxiomsOfTypes(ontology.getAxioms(), AxiomType.DECLARATION)) {
-			a.getClassesInSignature().stream().forEach(f->System.out.println(f.getIRI().getFragment()));
-			
+			System.out.println(a);
 	}
 
 	}
@@ -196,7 +193,7 @@ public class OWLAPITest {
 		OWLClass cls = manager.getOWLClass(IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl#Country"));
 		for (OWLObjectPropertyDomainAxiom item : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN)) {
 			System.out.println("OBJECT_PROPERTY_DOMAIN "+item);
-	
+
 		}
 		System.out.println("------");
 		for (OWLObjectPropertyAssertionAxiom item: ontology.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
@@ -214,7 +211,7 @@ public class OWLAPITest {
 		for (OWLAxiom a : ontology.getAxioms()) {
 			if (a.isOfType(AxiomType.EQUIVALENT_CLASSES))
 				for (OWLClassExpression ce : ((OWLEquivalentClassesAxiom) a).getClassExpressions()) {
-					if (ce instanceof OWLObjectOneOf) {
+					if (ce.getClass().getName() == "org.semanticweb.owlapi.model.OWLObjectOneOf" ) {
 						// https://stackoverflow.com/questions/3087083/velocity-test-instanceof
 						Set<OWLIndividual> ind = ((OWLObjectOneOf) ce).getIndividuals();
 						System.out.println(a);
