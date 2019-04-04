@@ -47,7 +47,9 @@ import es.upm.tfo.lst.CodeGenerator.GenerateProject;
 public class IntegratedTest {
 
 	private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
+	private static final String ONT_URL_ANN = "https://raw.githubusercontent.com/ApolloDev/apollo-sv/master/src/ontology/apollo-sv.owl";
 	OWLOntology ontology = null;
+	OWLOntology ontologyWithAnnotations = null;
 	OWLReasonerFactory reasonerFactory = null;
 	OWLOntologyManager ontManager = null;
 	VelocityContext context = null;
@@ -61,6 +63,7 @@ public class IntegratedTest {
 	public void init() throws OWLOntologyCreationException, IOException {
 		ontManager = OWLManager.createOWLOntologyManager();
 		this.ontology = ontManager.loadOntologyFromOntologyDocument(new URL(ONT_URL).openStream());
+		this.ontologyWithAnnotations = ontManager.loadOntologyFromOntologyDocument(new URL(ONT_URL_ANN).openStream());
 		this.engine = new VelocityEngine();
 		this.props = new Properties();
 		props.put("file.resource.loader.path", "src/main/resources/");
@@ -85,6 +88,10 @@ public class IntegratedTest {
 		this.writer.close();
 	}
 
+	protected void runEnum(String velociMacro) throws IOException {
+		this.context.put("ontology", this.ontologyWithAnnotations);
+		runProject(velociMacro);
+	}
 	protected void runOntology(String velociMacro) throws IOException {
 		this.context.put("ontology", this.ontology);
 		runProject(velociMacro);
@@ -114,12 +121,14 @@ public class IntegratedTest {
 	@Test
 	public void activatorTest() throws IOException {
 		this.writer = new FileWriter(new File("target/activator.java"));
-		runProject("Activator.java.vm");
+		runEnum("Activator.java.vm");
 	}
 
 	@Test
-	public void enumerationTest() {
+	public void enumerationTest() throws IOException  {
 		// TODO find an ontology with Enumerations.
+		this.writer = new FileWriter(new File("target/enumeratios.java"));
+		runEnum("Enumeration.java.vm");
 	}
 
 	@Test
