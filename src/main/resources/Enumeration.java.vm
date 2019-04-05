@@ -3,7 +3,7 @@
 #getEnum($class)
 package #package($ontology);
 
-import org.universAAL.middleware.owl.ManagedIndividual;
+import org.universAAL.middleware.owl.*;
 
 /**
 ## TODO add Javadoc

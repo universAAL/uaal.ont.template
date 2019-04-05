@@ -2,13 +2,8 @@
 #license()
 package #package($ontology);
 
-import org.universAAL.middleware.owl.DataRepOntology;
-import org.universAAL.middleware.owl.ManagedIndividual;
-import org.universAAL.middleware.owl.MergedRestriction;
-import org.universAAL.middleware.owl.OntClassInfoSetup;
-import org.universAAL.middleware.owl.Ontology;
-import org.universAAL.middleware.rdf.Resource;
-import org.universAAL.middleware.rdf.TypeMapper;
+import org.universAAL.middleware.owl.*;
+import org.universAAL.middleware.rdf.*;
 import ${PackageBase}.#ontFactory($ontology);
 
 ##TODO add javadoc
@@ -65,16 +60,19 @@ public class #ontClassName($ontology) extends Ontology {
 		OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(
 		#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index} ) ;
 	#end
-	## TODO create individuals TOO.
-
 	#end
+
+		ObjectPropertySetup ops;
+		DatatypePropertySetup dps;
 	#foreach( $axiom in ${ontology.getAxioms()})
 	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
 			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
 		#set($class = ${axiom.getEntity()})
+		#set($oci = "oci_${ #className ($axiom.getEntity())}")
 		#parse("createClass.vm")
 	#end
 	#end
-		## INSTANCES
+
+	## Named Individuals
 	}
 }

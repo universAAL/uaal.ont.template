@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.universAAL.middleware.rdf.Resource;
-import org.universAAL.middleware.owl.ManagedIndividual;
+import org.universAAL.middleware.owl.*;
 
 
 /**
  * ## TODO add comment (in english) from rdfs:label and/or rdfs:comment
- ## TODO Also add Template generation comment.
  * #templateStamp()
  */
  ## resolve super class
@@ -50,7 +49,7 @@ public class #className($class) extends $result {
 #end
 #end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
-#if($prop.getDomain().equals(cls))
+#if($prop.getDomain().equals($class))
 	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
 #end

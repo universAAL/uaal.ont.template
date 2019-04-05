@@ -1,34 +1,119 @@
-##oci_${ #className ($axiom.getEntity())}
-		#foreach ( $clsAxiom in $ontology.getAxioms($class))##
-			##Check for class annotations
-			##oci.setResourceComment("A comment describing what this concept is used for");
-			##oci.setResourceLabel("Human readable ID for the concept. e.g: 'My Concept'");
-
-			##Check for Named SubClassof
-			##oci.addSuperClass(ManagedIndividual.MY_URI);
-
-			##Check for ClassExpression SubClassof (ie properties)
-					## ObjectProperties
-		// This restriction means that in this property there must be a Device
-		// concept, with cardinality 1:1 (a mandatory single Device).
-		// SetFunctional means it can only have one value (max cardinality is 1)
-		oci.addObjectProperty(MyConcept.PROP_X_CONCEPT_ONLY_ONE).setFunctional();
-		oci.addRestriction(MergedRestriction.getAllValuesRestrictionWithCardinality(MyConcept.PROP_X_CONCEPT_ONLY_ONE,
-				Device.MY_URI, 1, 1));
-
-		// This restriction means that in this property there can be none,
-		// one or many Sensor concepts
-		oci.addObjectProperty(MyConcept.PROP_Y_CONCEPT_LIST);
-		oci.addRestriction(MergedRestriction.getAllValuesRestriction(MyConcept.PROP_Y_CONCEPT_LIST, Sensor.MY_URI));
-
-		## DataProperties
-		// If the concept in the property has to be a literal (boolean,string,
-		// int...) make use of adDatatype and then TypeMapper to get its URI. In
-		// this case the cardinality is "optional" (0 or 1)
-		oci.addDatatypeProperty(MyConcept.PROP_Z_LITERAL_OPTIONAL).setFunctional();
-		oci.addRestriction(MergedRestriction.getAllValuesRestrictionWithCardinality(MyConcept.PROP_Z_LITERAL_OPTIONAL,
-				TypeMapper.getDatatypeURI(Long.class), 0, 1));
-			##Check for EquivalentClass
-
-			##Check for DisjointClass
+##Required Vars: $oci , $class, $ontology
+		/*
+		 *  ${class.getIRI()}
+		 */
+##Check for class annotations
+	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+			${oci}.setResourceLabel("${annotation.getValue()}");
+		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+			${oci}.setResourceComment("${annotation.getValue()}");
+		#else
+			${oci}.getInfo().setProperty("${annotation.getProperty().getIRI()}","${annotation.getValue()}");
 		#end
+	#end
+##Check for Named SubClassof
+	#set ( $isSuperClassSet = "false");
+	#foreach( $superClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
+		#if(!${superClass.isAnonymous()} && ${superClass.isClassExpressionLiteral()}
+			&& ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#Thing"
+			&& ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#NamedIndivudual")
+		#set ( $isSuperClassSet = "true");
+			##TODO: Resolve to NameSpace?
+			${oci}.addSuperClass("${superClass.asOWLClass().getIRI()}");
+		#elseif (${superClass.isAnonymous()} && !(${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
+		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
+		##filter NOT Property Class Expressions
+		${oci}.addSuperClass(#toRestriction (${superClass}));
+		#end
+	#end
+		##TODO if superclass not set then:
+	#if ( $isSuperClassSet == "false")
+		${oci}.addSuperClass(ManagedIndividual.MY_URI);
+	#end
+## ObjectProperties
+	#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
+		#if($prop.getDomain().equals($class))
+		ops = oci.addObjectProperty(#className($class).#propVar($prop);
+		#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
+		ops.setAsymmetric();
+		#end
+		#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
+		ops.setFunctional();
+		#end
+		#if(${EntitySearcher.isInverseFunctional($prop.getProperty(), $ontology)})
+		ops.setInverseFunctional();
+		#end
+		#if(${EntitySearcher.isIrreflexive($prop.getProperty(), $ontology)})
+		ops.setIrreflexive();
+		#end
+		#if(${EntitySearcher.isReflexive($prop.getProperty(), $ontology)})
+		ops.setReflexive();
+		#end
+		#if(${EntitySearcher.isSymmetric($prop.getProperty(), $ontology)})
+		ops.setSymmetric();
+		#end
+		#if(${EntitySearcher.isTransitive($prop.getProperty(), $ontology)})
+		ops.setTransitive();
+		#end
+		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
+		ops.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
+		#end
+		#end
+	#end
+## DataProperties
+	#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
+		#if($prop.getDomain().equals(cls))
+		dps = oci.addDatatypeProperty(#className($class).#propVar($prop)
+		#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
+		dps.setFunctional();
+		#end
+		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
+		dps.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
+		#end
+		#end
+	#end
+## RESTRICTIONS
+	#foreach ($restriction in ${ontology.getAxioms($class)}) {
+		#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
+					&& ${restriction.getSuperClass().isAnonymous()}
+					&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
+		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) {
+		## filter only Property Class Expressions
+			${oci}.addRestriction(new MergedRestriction().addRestriction(
+			#toRestriction (${restriction.getSuperClass()})
+			));
+		#end
+	#end
+##Check for EquivalentClass
+	#foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
+			${oci}.addEquivalentClass(#toRestriction (${eqClass}));
+	#end
+##Check for DisjointClass
+	#foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
+			${oci}.addDisjointClass(#toRestriction (${eqClass}));
+	#end
+##TODO Check for complement class
+			##${oci}.setComplementClass(#toRestriction (${eqClass}));
+##TODO add Individuals (need instance creator)
+			##${oci}.addInstance(instance);
