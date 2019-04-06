@@ -44,6 +44,7 @@ public class #className($class) extends ManagedIndividual {
 	private MyEnumeration(int order) {
 		super(names[order]);
 		this.order = order;
+		## TODO build the Named Individual Graph, if needed.
 	}
 
 	public MyEnumeration() {

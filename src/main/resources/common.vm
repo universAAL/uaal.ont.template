@@ -127,15 +127,17 @@ new HasValueRestriction("${classExpression.getProperty().getIRI()}", Object) ##T
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_COMPLEMENT_OF)
 new Complement( #toRestriction( ${classExpression.getOperand()}))
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_INTERSECTION_OF)
-new Intersection()
+new Intersection() {{
 #foreach( $operand in ${classExpression.getOperands()})
 .addType(type) ##TODO!!!
 #end
+}}
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
-new Union()
+new Union() {{
 #foreach( $operand in ${classExpression.getOperands()})
 .addType(type) ##TODO!!!
 #end
+}}
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
 TypeURI.asTypeURI("${classExpression.getIRI()}")
 #end
