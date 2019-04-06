@@ -123,7 +123,7 @@ public ${rangeType}[] get$propName() {
 	public List list$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
-			return propList;
+			return (List) propList;
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
