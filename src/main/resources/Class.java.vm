@@ -153,7 +153,12 @@ public ${rangeType}[] get$propName() {
 		if (propList instanceof List){
 			List list = (List) propList;
 			list.remove(arg);
-			props.put(#propVar($prop), list);
+			if (list.size() == 0)
+				props.remove(#propVar($prop));
+			else if (list.size() == 1)
+				props.put(#propVar($prop), list.get(0));
+			else
+				props.put(#propVar($prop), list);
 		} else if (propList == arg) {
 			props.remove(#propVar($prop));
 		}
