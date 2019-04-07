@@ -10,8 +10,20 @@ import org.universAAL.middleware.owl.*;
 
 
 /**
- * ## TODO add comment (in english) from rdfs:label and/or rdfs:comment
+##Check for class annotations
+#set( $comments = [])
+	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
+		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+ 			#set($exec = ${comments.add("${annotation.getValue()}.")})
+		#end
+	#end
+#foreach( $comment in $comments)
+ * $comment
+#end
  * #templateStamp()
+## TODO: add dot notation for jadoc graph generation
  */
  ## resolve super class
  #macro( resolveSuperClass $class)
@@ -34,7 +46,7 @@ import org.universAAL.middleware.owl.*;
 #if ($result.isEmpty()) {
 	#set($result = "ManagedIndividual")
 #else
-	##TODO: maybe be more intelligent selecting from avilable superclass
+	##XXX: maybe be more intelligent selecting from avilable superclass
 	#set($result = ${result.get(0)}
 #end
 #end

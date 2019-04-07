@@ -25,15 +25,17 @@
 #macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
 #end
+## =========== Make First Letter of a string uppercase
+#macro( toFirstUpperCase $str)
+${str.substring(0, 1).toUpperCase()}${str.substring(1)}
+#end
 ## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
-##TODO ensure first letter is upper case.
-${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
+#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology")
 #end
 ## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
-##TODO ensure first letter is upper case.
-${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
+#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory")
 #end
 #end
 ## =========== resolve URI with NAMESPACE, if possible
@@ -46,8 +48,8 @@ ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
 #end
 #end
 ## =========== get the java className for a given Ont Class
-#macro( className $class)## TODO ensure first letter is upper case
-${class.getIRI().getFragment()}
+#macro( className $class)
+#toFirstUpperCase("${class.getIRI().getFragment()}")
 #end
 ## =========== get the Attribute string reffering to a property
 #macro( propVar $prop)##
@@ -86,59 +88,4 @@ $res
 ## ============ template stamp
 #macro ( templateStamp)
 Created on $Date using ${project.getMainModel().getName()} template, version ${project.getMainModel().getVersion()}
-#end
-## ============= check if a classExpression is a ClassPropertyExpression
-#macro( isClassPropertyExpression $typeOFClassExpression)
-$typeOFClassExpression == $ClassExpressionType.DATA_ALL_VALUES_FROM
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
-		|| $typeOFClassExpression == $ClassExpressionType.DATA_SOME_VALUES_FROM
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
-		|| $typeOFClassExpression == $ClassExpressionType.DATA_EXACT_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.DATA_MIN_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_MIN_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.DATA_MAX_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_MAX_CARDINALITY
-		|| $typeOFClassExpression == $ClassExpressionType.DATA_HAS_VALUE
-		|| $typeOFClassExpression == $ClassExpressionType.OBJECT_HAS_VALUE
-#end
-## ============= Class Expression to Restriction
-#macro ( toRestriction $classExpression)
-#if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( "${classExpression.getProperty().getIRI()}",
-								 #toRestriction( ${classExpression.getFiller()}))
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-new SomeValuesFromRestriction( "${classExpression.getProperty().getIRI()}",
-								 #toRestriction( ${classExpression.getFiller()}))
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
-new ExactCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MIN_CARDINALITY
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MIN_CARDINALITY)
-new MinCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MAX_CARDINALITY
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MAX_CARDINALITY)
-new MaxCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
-new HasValueRestriction("${classExpression.getProperty().getIRI()}", Object) ##TODO
-#elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_COMPLEMENT_OF)
-new Complement( #toRestriction( ${classExpression.getOperand()}))
-#elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_INTERSECTION_OF)
-new Intersection() {{
-#foreach( $operand in ${classExpression.getOperands()})
-.addType(type) ##TODO!!!
-#end
-}}
-#elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
-new Union() {{
-#foreach( $operand in ${classExpression.getOperands()})
-.addType(type) ##TODO!!!
-#end
-}}
-#elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
-TypeURI.asTypeURI("${classExpression.getIRI()}")
-#end
 #end
