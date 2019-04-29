@@ -58,7 +58,7 @@ PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase(
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
 #set( $res = "false")
-#foreach($a in ${ontology.getAxioms($class)})
+#foreach($a in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
 	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
 		#foreach ($ce in ${a.getClassExpressions()})
 			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )
@@ -73,7 +73,7 @@ $res
 ## returns nothing, sets the varible $enum as an array list of namedindividuals.
 #macro( getEnum $class)##
 #set( $enum = [])
-#foreach($a in ${ontology.getAxioms($class)})
+#foreach($a in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
 	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
 		#foreach ($ce in ${a.getClassExpressions()})
 			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )

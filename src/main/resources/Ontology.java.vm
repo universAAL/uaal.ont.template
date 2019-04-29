@@ -187,7 +187,7 @@ new URIRestriction() ##inline methods in URIRestriction
 	#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 		#if($prop.getDomain().equals($class))
 		#set($exec = ${objprops.add($prop.getProperty())})
-		ops = oci.addObjectProperty(#className($class).#propVar($prop);
+		ops = ${oci}.addObjectProperty(#className($class).#propVar($prop);
 		#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
 		ops.setAsymmetric();
 		#end
@@ -228,7 +228,7 @@ new URIRestriction() ##inline methods in URIRestriction
 	#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 		#if($prop.getDomain().equals($class))
 		#set($exec = ${datprops.add($prop.getProperty())})
-		dps = oci.addDatatypeProperty(#className($class).#propVar($prop)
+		dps = ${oci}.addDatatypeProperty(#className($class).#propVar($prop)
 		#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
 		dps.setFunctional();
 		#end
@@ -244,7 +244,7 @@ new URIRestriction() ##inline methods in URIRestriction
 		#end
 	#end
 ## RESTRICTIONS
-	#foreach ($restriction in ${ontology.getAxioms($class)}) {
+	#foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)}) {
 		#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
 					&& ${restriction.getSuperClass().isAnonymous()}
 					&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
@@ -371,9 +371,11 @@ public class #ontClassName($ontology) extends Ontology {
 		#createClass($class $ontology $oci)
 	#end
 	#end
-
-	## TODO: un classified Named Individuals ??
 	
-	## TODO: Iterate over axioms which apply to entities not defined in this ontology
+	## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
+	## get all references with getClassesInsignature
+	## remove from set AxiomType.getAxiomsOfTypes(ontology.getAxioms(), AxiomType.DECLARATION)
+	## count the significative axioms (i.e: check that there is going to be some kind of output)
+	## in case declaration is needed, create oci and call createClass Macro
 	}
 }

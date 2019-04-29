@@ -31,8 +31,10 @@ import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLDataComplementOf;
@@ -57,6 +59,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
@@ -256,7 +259,7 @@ public class OWLAPITest {
 				System.out.println(sc);
 			}
 		}
-		for (OWLAxiom a : ontology.getAxioms(cls)) {
+		for (OWLAxiom a : ontology.getAxioms(cls,Imports.EXCLUDED)) {
 			System.out.println(a);
 		}
 	}
@@ -267,8 +270,7 @@ public class OWLAPITest {
 				.getEntitiesInSignature(IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl#Capricciosa"))
 				.toArray()[0];
 
-
-		for (OWLAxiom a : ontology.getAxioms(cls)) {
+		for (OWLAxiom a : ontology.getAxioms(cls,Imports.EXCLUDED)) {
 			OWLClassExpression restriction;
 			if (a.isOfType(AxiomType.SUBCLASS_OF)
 					&& ((OWLSubClassOfAxiom)a).getSuperClass().isAnonymous()) {
@@ -280,6 +282,27 @@ public class OWLAPITest {
 				System.out.println(restriction);
 
 			}
+		}
+	}
+	
+	public void buildIndivdual() {
+		OWLIndividual i = null;
+		if (i.isAnonymous()) 
+			;//use anonymous initializer
+		else
+			; //use uri initializer
+		for (OWLAnnotationAssertionAxiom aaa : ontology.getAnnotationAssertionAxioms((OWLAnnotationSubject) i)){
+			// add annotation properties
+		}
+		for (OWLClassAssertionAxiom caa : ontology.getClassAssertionAxioms(i)) {
+			if(caa.getClassExpression().isClassExpressionLiteral())
+				caa.getClassExpression().asOWLClass().getIRI();//add type
+		}
+		for (OWLDataPropertyAssertionAxiom dpa : ontology.getDataPropertyAssertionAxioms(i)) {
+			// add dataproperties
+		}
+		for (OWLObjectPropertyAssertionAxiom opa : ontology.getObjectPropertyAssertionAxioms(i)) {
+			// build objects and add.
 		}
 	}
 }
