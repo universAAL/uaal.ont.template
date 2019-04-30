@@ -156,7 +156,7 @@ public class OWLAPITest {
 	@Test
 	public void ontologyClassDeclarations() {
 		System.out.println("ontology.getAxioms()");
-		for (OWLAxiom a : AxiomType.getAxiomsOfTypes(ontology.getAxioms(), AxiomType.DECLARATION)) {
+		for (OWLAxiom a : AxiomType.getAxiomsOfTypes(ontology.getAxioms(Imports.EXCLUDED), AxiomType.DECLARATION)) {
 			System.out.println(a);
 	}
 
@@ -284,10 +284,10 @@ public class OWLAPITest {
 			}
 		}
 	}
-	
+
 	public void buildIndivdual() {
 		OWLIndividual i = null;
-		if (i.isAnonymous()) 
+		if (i.isAnonymous())
 			;//use anonymous initializer
 		else
 			; //use uri initializer

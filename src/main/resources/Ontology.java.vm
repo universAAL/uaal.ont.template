@@ -43,19 +43,19 @@ TypeURI.asTypeURI("${classExpression.getIRI()}")
 ## ============= Data Range to Type Restriction
 #macro ( toTypeRestriction $dataRange)
 #if(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_COMPLEMENT_OF})
-new Complement( #toTypeRestriction( ${dataRange.getDataRange()}))	
+new Complement( #toTypeRestriction( ${dataRange.getDataRange()}))
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_INTERSECTION_OF})
 new Intersection() {{
 #foreach( $operand in ${dataRange.getOperands()})
 .addType( #toTypeExpression($operand)) ##TODO!!!
 #end
-}}	
+}}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_UNION_OF})
 new Union() {{
 #foreach( $operand in ${dataRange.getOperands()})
 .addType( #toTypeExpression($operand)) ##TODO!!!
 #end
-}}	
+}}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_ONE_OF})
 new Enumeration( new Object [] {
 #foreach( $literal in ${dataRange.getValues()})
@@ -283,7 +283,7 @@ new URIRestriction() ##inline methods in URIRestriction
 			));
 			#end
 		#end
-	
+
 	#end
 ##Check for EquivalentClass
 	#foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
@@ -371,11 +371,24 @@ public class #ontClassName($ontology) extends Ontology {
 		#createClass($class $ontology $oci)
 	#end
 	#end
-	
+
 	## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
-	## get all references with getClassesInsignature
-	## remove from set AxiomType.getAxiomsOfTypes(ontology.getAxioms(), AxiomType.DECLARATION)
-	## count the significative axioms (i.e: check that there is going to be some kind of output)
-	## in case declaration is needed, create oci and call createClass Macro
+	## Generate iterable set
+	#set($allClasses = $ontology.getClassesInSignature($Imports.EXCLUDED))
+	#foreach( $a in $AxiomType.getAxiomsOfTypes($ontology.getAxioms($Imports.EXCLUDED), $AxiomType.DECLARATION))
+		#set($exec = $allClasses.remove($a.getEntity()))
+	#end
+	## itereate over set of classes referenced but not declared in this ontology
+	#foreach( $c in $allClasses)
+		## generate temporal OCI
+		#set($oci = "oci_ex_${foreach.index}")
+		## Try generating statements
+		#set($genClass = "#createClass($c $ontology $oci)")
+		#if($genClass.contains($oci))
+			## if there is any output, then write it out
+			$oci = extendExistingOntClassInfo("${c.getIRI()}");
+			$genClass
+		#end
+	#end
 	}
 }
