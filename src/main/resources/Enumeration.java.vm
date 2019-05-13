@@ -3,10 +3,21 @@
 #getEnum($class)
 package #package($ontology);
 
-import org.universAAL.middleware.owl.ManagedIndividual;
+import org.universAAL.middleware.owl.*;
 
 /**
-## TODO add Javadoc
+## add Javadoc
+#set( $comments = [])
+	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
+		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+ 			#set($exec = ${comments.add("${annotation.getValue()}.")})
+		#end
+	#end
+#foreach( $comment in $comments)
+ * $comment
+#end
  * #templateStamp()
  */
 public class #className($class) extends ManagedIndividual {
@@ -44,6 +55,7 @@ public class #className($class) extends ManagedIndividual {
 	private MyEnumeration(int order) {
 		super(names[order]);
 		this.order = order;
+		## TODO build the Named Individual Graph, if needed.
 	}
 
 	public MyEnumeration() {

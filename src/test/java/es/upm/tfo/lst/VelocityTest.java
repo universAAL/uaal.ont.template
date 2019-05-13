@@ -89,5 +89,10 @@ public class VelocityTest {
 		this.template.merge(context, writer);
 	}
 
+	@Test
+	public void testRecursiveness() throws IOException {
+		this.template = engine.getTemplate("recursive.vm");
+		this.template.merge(context, writer);
+	}
 
 }

@@ -24,6 +24,8 @@
 			<output>#parse('common.vm') #if()"#isEnumeration($class)" != "true")src/main/java/${package($onotology).replace(".","/")}/${className($class)}.java#end</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -36,6 +38,8 @@
 			</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -49,6 +53,8 @@
 			</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
+					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
 		</macro>
 		<macro>

@@ -1,0 +1,23 @@
+#macro( reduce $string)
+$string
+#if($string.length() > 1)
+	#set ($nl = ${string.length()} - 1)
+#reduce (${string.substring(0, $nl)})
+#end
+#end
+#reduce("trolololo")
+#macro(my_macro $param)
+  #if(!$param)
+     #set($param = "oldValue")
+  #end
+  $param
+#end
+#my_macro()
+#my_macro("eso")
+#my_macro()
+#macro( mdefine )
+#set( $result = "res")
+#end
+$!result
+#mdefine()
+$!result

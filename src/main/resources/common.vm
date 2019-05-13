@@ -25,15 +25,17 @@
 #macro( package $ontology)##
 ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}
 #end
+## =========== Make First Letter of a string uppercase
+#macro( toFirstUpperCase $str)
+${str.substring(0, 1).toUpperCase()}${str.substring(1)}
+#end
 ## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
-##TODO ensure first letter is upper case.
-${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology
+#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology")
 #end
 ## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
-##TODO ensure first letter is upper case.
-${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
+#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory")
 #end
 #end
 ## =========== resolve URI with NAMESPACE, if possible
@@ -46,8 +48,8 @@ ${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory
 #end
 #end
 ## =========== get the java className for a given Ont Class
-#macro( className $class)## TODO ensure first letter is upper case
-${class.getIRI().getFragment()}
+#macro( className $class)
+#toFirstUpperCase("${class.getIRI().getFragment()}")
 #end
 ## =========== get the Attribute string reffering to a property
 #macro( propVar $prop)##
@@ -56,7 +58,7 @@ PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase(
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
 #set( $res = "false")
-#foreach($a in ${ontology.getAxioms($class)})
+#foreach($a in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
 	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
 		#foreach ($ce in ${a.getClassExpressions()})
 			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )
@@ -71,7 +73,7 @@ $res
 ## returns nothing, sets the varible $enum as an array list of namedindividuals.
 #macro( getEnum $class)##
 #set( $enum = [])
-#foreach($a in ${ontology.getAxioms($class)})
+#foreach($a in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
 	#if ($a.isOfType($AxiomType.EQUIVALENT_CLASSES))
 		#foreach ($ce in ${a.getClassExpressions()})
 			#if (${ce.getClass().getName()} == "org.semanticweb.owlapi.model.OWLObjectOneOf" )

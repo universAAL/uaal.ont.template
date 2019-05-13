@@ -27,30 +27,42 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
+import org.semanticweb.owlapi.model.OWLDataComplementOf;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLDataUnionOf;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
+import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 import uk.ac.manchester.cs.jfact.JFactFactory;
 
@@ -144,7 +156,7 @@ public class OWLAPITest {
 	@Test
 	public void ontologyClassDeclarations() {
 		System.out.println("ontology.getAxioms()");
-		for (OWLAxiom a : AxiomType.getAxiomsOfTypes(ontology.getAxioms(), AxiomType.DECLARATION)) {
+		for (OWLAxiom a : AxiomType.getAxiomsOfTypes(ontology.getAxioms(Imports.EXCLUDED), AxiomType.DECLARATION)) {
 			System.out.println(a);
 	}
 
@@ -227,16 +239,70 @@ public class OWLAPITest {
 	public void assertionAnnotations() {
 		for (OWLAnnotationAssertionAxiom element : ontology.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
 			System.out.println(element);
+
 		}
 
 	}
 
 	@Test
-	public void listAxioms4Classe() {
-		OWLClass cls = (OWLClass) ontology.getClassesInSignature().toArray()[3];
-		for (OWLAxiom a : ontology.getAxioms(cls)) {
+	public void listAxioms4Class() {
+		OWLClass cls = (OWLClass) ontology
+				.getEntitiesInSignature(IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl#Capricciosa"))
+				.toArray()[0];
+		for (OWLAnnotation a : EntitySearcher.getAnnotations(cls, ontology)) {
+			System.out.println(a.getProperty().getIRI().toString());
+			System.out.println(a);
+		}
+		for ( OWLClassExpression sc : EntitySearcher.getSuperClasses(cls, ontology)) {
+			if (!sc.isAnonymous() && sc.isClassExpressionLiteral()) {
+				sc.asOWLClass().getIRI();
+				System.out.println(sc);
+			}
+		}
+		for (OWLAxiom a : ontology.getAxioms(cls,Imports.EXCLUDED)) {
 			System.out.println(a);
 		}
 	}
 
+	@Test
+	public void listRestrictions4Class() {
+		OWLClass cls = (OWLClass) ontology
+				.getEntitiesInSignature(IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl#Capricciosa"))
+				.toArray()[0];
+
+		for (OWLAxiom a : ontology.getAxioms(cls,Imports.EXCLUDED)) {
+			OWLClassExpression restriction;
+			if (a.isOfType(AxiomType.SUBCLASS_OF)
+					&& ((OWLSubClassOfAxiom)a).getSuperClass().isAnonymous()) {
+				restriction = ((OWLSubClassOfAxiom)a).getSuperClass();
+				if (restriction.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
+					((OWLObjectSomeValuesFrom)restriction).getFiller();
+				((OWLObjectUnionOf)restriction).getOperands();
+				((OWLObjectComplementOf)restriction).getOperand();
+				System.out.println(restriction);
+
+			}
+		}
+	}
+
+	public void buildIndivdual() {
+		OWLIndividual i = null;
+		if (i.isAnonymous())
+			;//use anonymous initializer
+		else
+			; //use uri initializer
+		for (OWLAnnotationAssertionAxiom aaa : ontology.getAnnotationAssertionAxioms((OWLAnnotationSubject) i)){
+			// add annotation properties
+		}
+		for (OWLClassAssertionAxiom caa : ontology.getClassAssertionAxioms(i)) {
+			if(caa.getClassExpression().isClassExpressionLiteral())
+				caa.getClassExpression().asOWLClass().getIRI();//add type
+		}
+		for (OWLDataPropertyAssertionAxiom dpa : ontology.getDataPropertyAssertionAxioms(i)) {
+			// add dataproperties
+		}
+		for (OWLObjectPropertyAssertionAxiom opa : ontology.getObjectPropertyAssertionAxioms(i)) {
+			// build objects and add.
+		}
+	}
 }

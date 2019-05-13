@@ -6,13 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.universAAL.middleware.rdf.Resource;
-import org.universAAL.middleware.owl.ManagedIndividual;
+import org.universAAL.middleware.owl.*;
 
 
 /**
- * ## TODO add comment (in english) from rdfs:label and/or rdfs:comment
- ## TODO Also add Template generation comment.
+##Check for class annotations
+#set( $comments = [])
+	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
+		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+ 			#set($exec = ${comments.add("${annotation.getValue()}.")})
+		#end
+	#end
+#foreach( $comment in $comments)
+ * $comment
+#end
  * #templateStamp()
+## TODO: add dot notation for jadoc graph generation
  */
  ## resolve super class
  #macro( resolveSuperClass $class)
@@ -35,7 +46,7 @@ import org.universAAL.middleware.owl.ManagedIndividual;
 #if ($result.isEmpty()) {
 	#set($result = "ManagedIndividual")
 #else
-	##TODO: maybe be more intelligent selecting from avilable superclass
+	##XXX: maybe be more intelligent selecting from avilable superclass
 	#set($result = ${result.get(0)}
 #end
 #end
@@ -50,7 +61,7 @@ public class #className($class) extends $result {
 #end
 #end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
-#if($prop.getDomain().equals(cls))
+#if($prop.getDomain().equals($class))
 	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
 #end
@@ -124,7 +135,7 @@ public ${rangeType}[] get$propName() {
 	public List list$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
-			return propList;
+			return (List) propList;
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
@@ -154,7 +165,12 @@ public ${rangeType}[] get$propName() {
 		if (propList instanceof List){
 			List list = (List) propList;
 			list.remove(arg);
-			props.put(#propVar($prop), list);
+			if (list.size() == 0)
+				props.remove(#propVar($prop));
+			else if (list.size() == 1)
+				props.put(#propVar($prop), list.get(0));
+			else
+				props.put(#propVar($prop), list);
 		} else if (propList == arg) {
 			props.remove(#propVar($prop));
 		}
