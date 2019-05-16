@@ -41,7 +41,7 @@
 		<macro>
 			<template>Ontology.java.vm</template>
 			<for>ontology</for>
-			<output>src/main/java/${PackageBase.getValue().replace(".","/")}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}/${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology.java</output>
+			<output>src/main/java/${PackageBase.replace(".","/")}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}Ontology.java</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
@@ -51,7 +51,7 @@
 		<macro>
 			<template>Factory.java.vm</template>
 			<for>ontology</for>
-			<output>src/main/java/${PackageBase.getValue().replace(".","/")}/${ontology.getIRI().getFragment()}.java
+			<output>src/main/java/${PackageBase.replace(".","/")}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}.java
 			</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
@@ -62,7 +62,7 @@
 		<macro>
 			<template>Activator.java.vm</template>
 			<for>project</for>
-			<output>src/main/java/${PackageBase.getValue().replace(".","/")}/Activator.java</output>
+			<output>src/main/java/${PackageBase.replace(".","/")}/Activator.java</output>
 		</macro>
 		<macro>
 			<template>pom.xml.vm</template>

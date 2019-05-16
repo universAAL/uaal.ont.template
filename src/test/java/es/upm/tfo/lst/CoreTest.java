@@ -31,7 +31,7 @@ public class CoreTest {
 	
 	@Before
 	public void init() {
-		
+	
 		ontManager = OWLManager.createOWLOntologyManager();
 		PropertyConfigurator.configure("./src/main/resources/log4jConfigFile/log4j.properties");
 		this.parser = new XmlParser();
