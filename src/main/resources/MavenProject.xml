@@ -46,9 +46,8 @@
 			<template>Ontology.java.vm</template>
 			<for>ontology</for>
 			<output>src/main/java/${
-				PackageBase.replace(".","/")
-				}/${
-				ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()
+				PackageBase.getValue().replace(".","/")
+				}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()
 				}/${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology.java
 			</output>
 			<imports>
@@ -61,7 +60,7 @@
 			<template>Factory.java.vm</template>
 			<for>ontology</for>
 			<output>src/main/java/${
-				PackageBase.replace(".","/")
+				PackageBase.getValue().replace(".","/")
 				}/${ontology.getIRI().getFragment()}.java
 			</output>
 			<imports>
@@ -73,7 +72,7 @@
 		<macro>
 			<template>Activator.java.vm</template>
 			<for>project</for>
-			<output>src/main/java/${PackageBase.replace(".","/")}/Activator.java</output>
+			<output>src/main/java/${PackageBase.getValue().replace(".","/")}/Activator.java</output>
 		</macro>
 		<macro>
 			<template>pom.xml.vm</template>
