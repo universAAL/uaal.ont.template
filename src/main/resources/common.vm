@@ -27,15 +27,28 @@ ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().t
 #end
 ## =========== Make First Letter of a string uppercase
 #macro( toFirstUpperCase $str)
-${str.substring(0, 1).toUpperCase()}${str.substring(1)}
+#if( $str.length() > 0)
+${str.substring(0, 1).toUpperCase()}##
+#end
+#if( $str.length() > 1)
+${str.substring(1)}
+#end
+#end
+## =========== Remove any possible extension
+#macro( removeExt $str)
+#if ($str.lastIndexOf(".")< 0)
+$str.toLowerCase()
+#else
+$str.substring(0,$str.lastIndexOf(".")).toLowerCase()
+#end
 #end
 ## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
-#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Ontology")
+#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Ontology")
 #end
 ## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
-#toFirstUpperCase("${ontology.getOntologyID().getOntologyIRI().get().getFragment()}Factory")
+#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Factory")
 #end
 #end
 ## =========== resolve URI with NAMESPACE, if possible

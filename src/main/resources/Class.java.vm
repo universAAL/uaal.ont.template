@@ -26,28 +26,27 @@ import org.universAAL.middleware.owl.*;
 ## TODO: add dot notation for jadoc graph generation
  */
  ## resolve super class
- #macro( resolveSuperClass $class)
+#macro( resolveSuperClass $class)
 #set( $result = [])
 #set( $superClasses = "${reasoner.getReasoner().getSuperClasses(cls, true).getNodes()}")
 #if (${superClasses.size()} >= 1)
 	#foreach( $supercls in $superClasses)
-	#if (${ontology.containsClassInSignature($supercls.getIRI())}) {
-		#set ( $exec = ${result.add("#className($supercls)")};
-	#end
-	#else
-		#foreach ($ont in  ${project.getOntologies2BProcesed()}) {
-			#if (${ont.containsClassInSignature($supercls.getIRI())}) {
-				#set ( $exec = ${result.add("#package($ont).#className($supercls)")};
+		#if (${ontology.containsClassInSignature($supercls.getIRI())}) {
+			#set ( $exec = ${result.add("#className($supercls)")})
+		#else
+			#foreach ($ont in  ${project.getOntologies2BProcesed()}) {
+				#if (${ont.containsClassInSignature($supercls.getIRI())}) {
+					#set ( $exec = ${result.add("#package($ont).#className($supercls)")})
+				#end
 			#end
 		#end
-	#end
 	#end
 #end
 #if ($result.isEmpty()) {
 	#set($result = "ManagedIndividual")
 #else
 	##XXX: maybe be more intelligent selecting from avilable superclass
-	#set($result = ${result.get(0)}
+	#set($result = ${result.get(0)})
 #end
 #end
 public class #className($class) extends $result {
@@ -180,7 +179,7 @@ public ${rangeType}[] get$propName() {
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 #if($prop.getDomain().equals($class))
 #set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
-#set( $propName = "${propName.substring(0, 1).toUpperCase()}$propName.substring(1)")
+#set( $propName = "#toFirstUpperCase($propName)")
 ## TODO determine max cardinality (including Exact)
 ## TODO determine rangeType
 #set($rangeType = "ManagedIndividual")

@@ -21,7 +21,7 @@
 		<macro>
 			<template>Class.java.vm</template>
 			<for>class</for>
-			<output>#parse('common.vm') #if()"#isEnumeration($class)" != "true")src/main/java/${package($onotology).replace(".","/")}/${className($class)}.java#end</output>
+			<output>#parse('common.vm')#if("#isEnumeration($class)" != "true")src/main/java/#package($onotology).replace(".","/")/#className($class).java#end</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
@@ -31,7 +31,7 @@
 		<macro>
 			<template>Enumeration.java.vm</template>
 			<for>class</for>
-			<output>#parse('common.vm')#if ( "#isEnumeration($class)"  == "true")src/main/java/${package($onotology).replace(".","/")}/${className($class)}.java#end</output>
+			<output>#parse('common.vm')#if("#isEnumeration($class)"  == "true")src/main/java/#package($onotology).replace(".","/")/#className($class).java#end</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
@@ -41,7 +41,7 @@
 		<macro>
 			<template>Ontology.java.vm</template>
 			<for>ontology</for>
-			<output>src/main/java/${PackageBase.replace(".","/")}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}Ontology.java</output>
+			<output>#parse('common.vm')src/main/java/#package($ontology).replace(".","/")/#ontClassName($ontology).java</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
@@ -51,8 +51,7 @@
 		<macro>
 			<template>Factory.java.vm</template>
 			<for>ontology</for>
-			<output>src/main/java/${PackageBase.replace(".","/")}/${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().substring(0,${ontology.getOntologyID().getOntologyIRI().get().getFragment().lastIndexOf(".")})}.java
-			</output>
+			<output>#parse('common.vm')src/main/java/${PackageBase.replace(".","/")}/#ontFactory($ontology).java</output>
 			<imports>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
