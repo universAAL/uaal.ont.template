@@ -3,6 +3,7 @@ package es.upm.tfo.lst;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.sql.Date;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
@@ -22,9 +23,9 @@ public class CoreTest {
 	private GenerateProject genPro=null;
 	private OntologyLoader ontologyLoader=null;
 	//----constants
-	//private final String webOntology ="https://protege.stanford.edu/ontologies/pizza/pizza.owl";
+	private final String webOntology ="https://protege.stanford.edu/ontologies/pizza/pizza.owl";
 	//private final String webOntology ="https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl";
-	private final String webOntology ="https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
+	//private final String webOntology ="https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
 	
 	private final String baseOutput="target/generated/";
 	private OWLOntologyManager ontManager;
@@ -41,7 +42,7 @@ public class CoreTest {
 	
 	@Test
 	public void CoreUAALTest() {
-
+			
 		 try {
 		 	File ff =  new File("/src/main/resources/template/MavenProject.xml");
 		 			System.out.println(ff.exists());
