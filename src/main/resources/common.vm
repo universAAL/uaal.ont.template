@@ -31,15 +31,15 @@ ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().t
 ${str.substring(0, 1).toUpperCase()}##
 #end
 #if( $str.length() > 1)
-${str.substring(1)}
+${str.substring(1)}##
 #end
 #end
 ## =========== Remove any possible extension
 #macro( removeExt $str)
 #if ($str.lastIndexOf(".")< 0)
-$str.toLowerCase()
+$str.toLowerCase()##
 #else
-$str.substring(0,$str.lastIndexOf(".")).toLowerCase()
+$str.substring(0,$str.lastIndexOf(".")).toLowerCase()##
 #end
 #end
 ## =========== get the Ontology's java Class name
@@ -48,7 +48,7 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase()
 #end
 ## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
-#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Factory")
+#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Factory")##
 #end
 #end
 ## =========== resolve URI with NAMESPACE, if possible
