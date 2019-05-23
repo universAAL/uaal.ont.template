@@ -139,18 +139,18 @@ new URIRestriction() ##inline methods in URIRestriction
 #end
 #end
 ## =============== Create Class
-#macro( createClass $class $ontology $oci)
+#macro( createClass $class $ontology $oci $nodefaults)
 		/*
 		 *  ${class.getIRI()}
 		 */
 ##Check for class annotations
 	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
 		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-			${oci}.setResourceLabel("${annotation.getValue()}");
+			${oci}.setResourceLabel(\"${annotation.getValue()}\");
 		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
-			${oci}.setResourceComment("${annotation.getValue()}");
+			${oci}.setResourceComment(\"${annotation.getValue()}\");
 		#else
-			${oci}.getInfo().addToProperty("${annotation.getProperty().getIRI()}","${annotation.getValue()}");
+			${oci}.getInfo().addToProperty(\"${annotation.getProperty().getIRI()}\","${annotation.getValue()}");
 		#end
 	#end
 ##Check for Named SubClassof
@@ -179,7 +179,7 @@ new URIRestriction() ##inline methods in URIRestriction
 		#end
 	#end
 		##TODO if superclass not set then:
-	#if ( $isSuperClassSet == "false")
+	#if ( $isSuperClassSet == "false" && !$nodefaults)
 		${oci}.addSuperClass(ManagedIndividual.MY_URI);
 	#end
 ## ObjectProperties
@@ -383,7 +383,7 @@ public class #ontClassName($ontology) extends Ontology {
 		## generate temporal OCI
 		#set($oci = "oci_ex_${foreach.index}")
 		## Try generating statements
-		#set($genClass = "#createClass($c $ontology $oci)")
+		#set($genClass = "#createClass($c $ontology $oci 'true')")
 		#if($genClass.contains($oci))
 			## if there is any output, then write it out
 			$oci = extendExistingOntClassInfo("${c.getIRI()}");
