@@ -18,11 +18,13 @@
 		</variable>
 		<variable>
 			<name>mavenArtifactID</name>
+			<default></default>
 			<required>true</required>
 			<description>Set the maven Artifact ID for the generated maven project</description>
 		</variable>
 		<variable>
 			<name>isASL2</name>
+			<default></default>
 			<required>false</required>
 			<description>set to true, for adding Apache Software License V2.0</description>
 		</variable>
