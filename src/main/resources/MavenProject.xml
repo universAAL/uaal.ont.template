@@ -35,7 +35,7 @@
 			<for>class</for>
 			<output>#parse('./common.vm')#set($aux = "#package($ontology)" )#if("#isEnumeration($class)" != "true")src/main/java/$aux.replace(".","/")/#className($class).java#end</output>
 			<imports>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
@@ -45,7 +45,7 @@
 			<for>class</for>
 			<output>#parse('./common.vm')#set($g = "#package( $ontology )" )#if("#isEnumeration($class)"  == "true")src/main/java/$g.replace(".","/")/#className($class).java#end</output>
 			<imports>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
@@ -55,7 +55,7 @@
 			<for>ontology</for>
 			<output>#parse('./common.vm')#set($g = "#package($ontology)" )src/main/java/$g.replace(".","/")/#ontClassName($ontology).java</output>
 			<imports>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
 					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
 			</imports>
