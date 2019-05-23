@@ -53,9 +53,7 @@ public class CoreTest {
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput);
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
-				this.genPro.setVariable("targetOperatingSystem","Linux");
-				this.genPro.setVariable( "date_expire", "9-5-2019");				
-				this.genPro.setVariable( "timezone", "(GMT+01:00)");
+				this.genPro.setVariable("mavenArtifactID","test");
 				File f = new File(baseOutput);
 				f.mkdirs();
 				genPro.process();
