@@ -277,8 +277,6 @@ public class OWLAPITest {
 				restriction = ((OWLSubClassOfAxiom)a).getSuperClass();
 				if (restriction.getClassExpressionType() == ClassExpressionType.OBJECT_SOME_VALUES_FROM)
 					((OWLObjectSomeValuesFrom)restriction).getFiller();
-				((OWLObjectUnionOf)restriction).getOperands();
-				((OWLObjectComplementOf)restriction).getOperand();
 				System.out.println(restriction);
 
 			}
