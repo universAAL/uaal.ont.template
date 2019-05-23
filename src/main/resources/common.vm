@@ -57,7 +57,7 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase()##
 #if( $URI.startsWith($ontNAMESPACE))
 #ontClassName($ontology) + "$URI.substring($ontNAMESPACE.length())"
 #else
-"$URI"
+"$URI"##
 #end
 #end
 ## =========== get the java className for a given Ont Class

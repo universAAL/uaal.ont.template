@@ -14,15 +14,13 @@ public class #ontFactory($ontology) implements ResourceFactory {
 
 	public Resource createInstance(String classURI, String instanceURI, int factoryIndex) {
 		switch (factoryIndex) {
-		#foreach( $axiom in ${ontology.getAxioms()})
-		#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()})
-		## No need to Skip Enumerations.
-		case ${foreach.index}:
-			return new #className(${axiom.getEntity()})(instanceURI);
-		#end
-		#end
-		}
-		return null;
-	}
-
+    #foreach($o in ${ontology.getAxioms($AxiomType.DECLARATION)})
+        #if(${o.getSignature().iterator().next().isOWLClass()}) 
+         ## No need to Skip Enumerations.
+			case ${foreach.index}:
+				return new #className(${axiom.getEntity()})(instanceURI);
+        #end
+	#end
+}
+return null;
 }

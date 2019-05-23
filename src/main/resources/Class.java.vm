@@ -27,30 +27,30 @@ import org.universAAL.middleware.owl.*;
  */
 ## resolve super class
 #macro( resolveSuperClass $class)
-#set( $result = [])
-#set( $superClasses = "${reasoner.getReasoner().getSuperClasses($class, true).getNodes()}")
+#set( $result = [] )
+#set( $superClasses = "${ureasoner.getReasoner().getSuperClasses($class, true).getNodes()}")
 #if (${superClasses.size()} >= 1)
 	#foreach( $supercls in $superClasses)
-		#if (${ontology.containsClassInSignature($supercls.getIRI())}) {
+		#if (${ontology.containsClassInSignature($supercls.getIRI())}) 
 			#set ( $exec = ${result.add("#className($supercls)")})
 		#else
-			#foreach ($ont in  ${project.getOntologies2BProcesed()}) {
-				#if (${ont.containsClassInSignature($supercls.getIRI())}) {
+			#foreach ($ont in  ${project.getOntologies2BProcesed()}) 
+				#if (${ont.containsClassInSignature($supercls.getIRI())}) 
 					#set ( $exec = ${result.add("#package($ont).#className($supercls)")})
 				#end
 			#end
 		#end
 	#end
 #end
-#if ($result.isEmpty() || !$result) {
+#if ( ${result.isEmpty()} || !$result) 
 	#set($result = "ManagedIndividual")
 #else
 	##XXX: maybe be more intelligent selecting from avilable superclass
 	#set($result = ${result.get(0)})
 #end
-$result
+$result##
 #end
-public class #className($class) extends #resolveSuperClass($class) {
+public class #className($class) extends #resolveSuperClass($class){
 
 	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 ## iterate over Props
