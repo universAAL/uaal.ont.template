@@ -28,7 +28,7 @@ import org.universAAL.middleware.owl.*;
 ## resolve super class
 #macro( resolveSuperClass $class)
 #set( $result = [] )
-#set( $superClasses = "${ureasoner.getReasoner().getSuperClasses($class, true).getNodes()}")
+#set( $superClasses = "${reasoner.getReasoner().getSuperClasses($class, true).getNodes()}")
 #if (${superClasses.size()} >= 1)
 	#foreach( $supercls in $superClasses)
 		#if (${ontology.containsClassInSignature($supercls.getIRI())}) 
