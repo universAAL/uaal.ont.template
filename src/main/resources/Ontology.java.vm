@@ -329,7 +329,6 @@ public class #ontClassName($ontology) extends Ontology {
 	##Ontology level
 		#foreach ( $a in ${ontology.getAnnotations()})
 		##$esc.getText('"') return &quot;
-		
 		getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()} $quote);
 		#end
 		#foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
@@ -355,16 +354,14 @@ public class #ontClassName($ontology) extends Ontology {
 	## Classes
 	## Declare all Classes first
 	#foreach( $axiom in ${ontology.getAxioms()})
-	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
-			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
+	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
 	## exclude enumerations
-		OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(
-		#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index} ) ;
+	OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index}) ;
 	#end
 	#end
-
-		ObjectPropertySetup ops;
-		DatatypePropertySetup dps;
+##
+ObjectPropertySetup ops;
+DatatypePropertySetup dps;
 	#foreach( $axiom in ${ontology.getAxioms()})
 	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
 			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
