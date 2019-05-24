@@ -1,7 +1,7 @@
 ## define common variables such as
 #macro( license )
 #if ($isASL2)
-#set( $YEAR = $Date.getYear() + 1900)
+#set( $YEAR = $date.getYear() + 1900)
 /*
 	Copyright $YEAR $License-holder
 
@@ -100,5 +100,5 @@ $res
 #end
 ## ============ template stamp
 #macro ( templateStamp)
-Created on $Date using ${project.getMainModel().getName()} template, version ${project.getMainModel().getVersion()}
+Created on $date using ${project.getMainModel().getName()} template, version ${project.getMainModel().getVersion()}
 #end
