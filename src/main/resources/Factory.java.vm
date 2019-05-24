@@ -15,7 +15,8 @@ public class #ontFactory($ontology) implements ResourceFactory {
 	public Resource createInstance(String classURI, String instanceURI, int factoryIndex) {
 		switch (factoryIndex) {
 #foreach( $axiom in ${ontology.getAxioms()})
-#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()})
+##${axiom.isOfType($AxiomType.DECLARATION)} && 
+#if(${axiom.getEntity().isOWLClass()})
 ## No need to Skip Enumerations.
 case ${foreach.index}:
 return new #className(${axiom.getEntity()})(instanceURI);
