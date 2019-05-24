@@ -44,7 +44,7 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase()##
 #end
 ## =========== get the Ontology's java Class name
 #macro( ontClassName $ontology)##
-#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Ontology")
+#toFirstUpperCase("#removeExt(${ontology.getOntologyID().getOntologyIRI().get().getFragment()})Ontology")##
 #end
 ## =========== get the Ontology's java factory Class name
 #macro( ontFactory $ontology)##
