@@ -1,6 +1,7 @@
 #parse('common.vm')
+#set ($quote ='"')
 #license()
-## ============= Class Expression to Restriction
+##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
@@ -327,9 +328,10 @@ public class #ontClassName($ontology) extends Ontology {
 	public void create() {
 	##Ontology level
 		#foreach ( $a in ${ontology.getAnnotations()})
-		getInfo().addToProperty(${a.getProperty().getIRI()}, ${a.getValue().getLiteral()});
+		##$esc.getText('"') return &quot;
+		
+		getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()} $quote);
 		#end
-
 		#foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
 		addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
 		#end
