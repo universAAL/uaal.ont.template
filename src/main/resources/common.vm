@@ -37,9 +37,9 @@ ${str.substring(1)}##
 ## =========== Remove any possible extension
 #macro( removeExt $str)
 #if ($str.lastIndexOf(".")< 0)
-$str.toLowerCase()##
+$str.toLowerCase().replace(" ", "")##
 #else
-$str.substring(0,$str.lastIndexOf(".")).toLowerCase()##
+$str.substring(0,$str.lastIndexOf(".")).toLowerCase().replace(" ", "")##
 #end
 #end
 ## =========== get the Ontology's java Class name

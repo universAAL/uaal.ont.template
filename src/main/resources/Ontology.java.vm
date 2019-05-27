@@ -3,8 +3,7 @@
 #license()
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
-#if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
+#if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
 new AllValuesFromRestriction( "${classExpression.getProperty().getIRI()}",
 								 #toRestriction( ${classExpression.getFiller()}))
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
@@ -81,19 +80,19 @@ new TypeURI("${dataRange.getBuiltInDatatype()}", true);
 	#elseif(${facetRes.getFacet()} == ${OWLFacet.MIN_INCLUSIVE})
 		#set( $exec =  ${minRestric.add(${facetRes.getFacetValue()})} )
 		#set( $exec =  ${minRestric.add("true")} )
-	#elseif(${facetRes.getFacet()} == ${OWLFacet.MAX_INCLUSIVE})
-		#set( $exec =  ${maxRestric.add(${facetRes.getFacetValue()})} )
-		#set( $exec =  ${maxRestric.add("true")} )
-	#elseif(${facetRes.getFacet()} == ${OWLFacet.MIN_EXCLUSIVE})
-		#set( $exec =  ${minRestric.add(${facetRes.getFacetValue()})} )
-		#set( $exec =  ${minRestric.add("false")} )
-	#elseif(${facetRes.getFacet()} == ${OWLFacet.MAX_EXCLUSIVE})
-		#set( $exec =  ${maxRestric.add(${facetRes.getFacetValue()})} )
-		#set( $exec =  ${maxRestric.add("false")} )
-	##elseif(${facetRes.getFacet() == ${OWLFacet.PATTERN}})
-	##elseif(${facetRes.getFacet() == ${OWLFacet.TOTAL_DIGITS}})
-	##elseif(${facetRes.getFacet() == ${OWLFacet.FRACTION_DIGITS}})
-	##elseif(${facetRes.getFacet() == ${OWLFacet.LANG_RANGE}})
+#elseif(${facetRes.getFacet()} == ${OWLFacet.MAX_INCLUSIVE})
+	#set( $exec =  ${maxRestric.add(${facetRes.getFacetValue()})} )
+	#set( $exec =  ${maxRestric.add("true")} )
+#elseif(${facetRes.getFacet()} == ${OWLFacet.MIN_EXCLUSIVE})
+	#set( $exec =  ${minRestric.add(${facetRes.getFacetValue()})} )
+	#set( $exec =  ${minRestric.add("false")} )
+#elseif(${facetRes.getFacet()} == ${OWLFacet.MAX_EXCLUSIVE})
+	#set( $exec =  ${maxRestric.add(${facetRes.getFacetValue()})} )
+	#set( $exec =  ${maxRestric.add("false")} )
+##elseif(${facetRes.getFacet() == ${OWLFacet.PATTERN}})
+##elseif(${facetRes.getFacet() == ${OWLFacet.TOTAL_DIGITS}})
+##elseif(${facetRes.getFacet() == ${OWLFacet.FRACTION_DIGITS}})
+##elseif(${facetRes.getFacet() == ${OWLFacet.LANG_RANGE}})
 	#end
 #end
 	#if(${dataRange.getDataType().getBuiltInDatatype()} == ${OWL2Datatype.XSD_LONG})
@@ -141,48 +140,46 @@ new URIRestriction() ##inline methods in URIRestriction
 #end
 ## =============== Create Class
 #macro( createClass $class $ontology $oci $nodefaults)
-		/*
-		 *  ${class.getIRI()}
-		 */
+/*
+ *  ${class.getIRI()}
+ */
 ##Check for class annotations
-	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
-		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-			${oci}.setResourceLabel(\"${annotation.getValue()}\");
-		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
-			${oci}.setResourceComment(\"${annotation.getValue()}\");
-		#else
-			${oci}.getInfo().addToProperty(\"${annotation.getProperty().getIRI()}\","${annotation.getValue()}");
-		#end
-	#end
+#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+${oci}.setResourceLabel(\"${annotation.getValue()}\");
+#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+${oci}.setResourceComment(\"${annotation.getValue()}\");
+#else
+${oci}.getInfo().addToProperty(\"${annotation.getProperty().getIRI()}\","${annotation.getValue()}");
+#end
+#end
 ##Check for Named SubClassof
-	#set ( $isSuperClassSet = "false");
-	#foreach( $superClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-		#if(!${superClass.isAnonymous()} && ${superClass.isClassExpressionLiteral()}
-			&& ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#Thing"
-			&& ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#NamedIndivudual")
-		#set ( $isSuperClassSet = "true");
-			##TODO: Resolve to NameSpace?
-			${oci}.addSuperClass("${superClass.asOWLClass().getIRI()}");
-		#elseif (${superClass.isAnonymous()} && !(${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
-		|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
-		##filter NOT Property Class Expressions
-		${oci}.addSuperClass(#toRestriction (${superClass}));
-		#end
+#set ( $isSuperClassSet = "false");
+#foreach( $superClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
+#if(!${superClass.isAnonymous()} && ${superClass.isClassExpressionLiteral()} && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#Thing" && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#NamedIndivudual")
+#set ( $isSuperClassSet = "true");
+##TODO: Resolve to NameSpace?
+${oci}.addSuperClass("${superClass.asOWLClass().getIRI()}");
+#elseif (${superClass.isAnonymous()} && !(${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
+|| ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
+##filter NOT Property Class Expressions
+	${oci}.addSuperClass(#toRestriction (${superClass}));
 	#end
-		##TODO if superclass not set then:
-	#if ( $isSuperClassSet == "false" && !$nodefaults)
-		${oci}.addSuperClass(ManagedIndividual.MY_URI);
-	#end
+#end
+	##TODO if superclass not set then:
+#if ( $isSuperClassSet == "false" && !$nodefaults)
+	${oci}.addSuperClass(ManagedIndividual.MY_URI);
+#end
 ## ObjectProperties
 #set($objprops = [])
 	#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
@@ -212,18 +209,18 @@ new URIRestriction() ##inline methods in URIRestriction
 		#end
 		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
 		ops.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
-		#end
-		#foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
-		ops.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
-		#end
-		#foreach( $disProp in ${EntitySearcher.getDisjointProperties($prop.getProperty(), $ontology)})
-		ops.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
-		#end
-		#foreach( $invProp in ${EntitySearcher.getInverses($prop.getProperty(), $ontology)})
-		ops.setInverseOf("${invProp.getNamedProperty().getIRI()}");
-		#end
-		#end
+#end
+#foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
+ops.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
+#end
+#foreach( $disProp in ${EntitySearcher.getDisjointProperties($prop.getProperty(), $ontology)})
+ops.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
+#end
+#foreach( $invProp in ${EntitySearcher.getInverses($prop.getProperty(), $ontology)})
+ops.setInverseOf("${invProp.getNamedProperty().getIRI()}");
 	#end
+	#end
+#end
 ## DataProperties
 #set($datprops = [])
 	#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
@@ -235,69 +232,69 @@ new URIRestriction() ##inline methods in URIRestriction
 		#end
 		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
 		dps.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
-		#end
-		#foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
-		dps.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
-		#end
-		#foreach( $disProp in ${EntitySearcher.getDisjointProperties($prop.getProperty(), $ontology)})
-		dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
-		#end
-		#end
+#end
+#foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
+dps.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
+#end
+#foreach( $disProp in ${EntitySearcher.getDisjointProperties($prop.getProperty(), $ontology)})
+dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
 	#end
+	#end
+#end
 ## RESTRICTIONS
-	#foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)}) {
-		#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
-					&& ${restriction.getSuperClass().isAnonymous()}
-					&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
-		|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) {
-		## filter only Property Class Expressions
-			${oci}.addRestriction(new MergedRestriction().addRestriction(
-			#toRestriction (${restriction.getSuperClass()})
-			));
+#foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)}) {
+	#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
+				&& ${restriction.getSuperClass().isAnonymous()}
+				&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) {
+	## filter only Property Class Expressions
+		${oci}.addRestriction(new MergedRestriction().addRestriction(
+		#toRestriction (${restriction.getSuperClass()})
+		));
+	#end
+#end
+## Restrictions defined through the ObjectProperty Range axioms
+#foreach( $prop in $objprops)
+	#foreach( $a in ${ontology.getAxioms($prop)})
+		#if( ${a.isOfType($AxiomType.OBJECT_PROPERTY_RANGE)})
+		${oci}.addRestriction(new MergedRestriction().addRestriction(
+		#toRestriction (${a.getRange()})
+		));
 		#end
 	#end
-	## Restrictions defined through the ObjectProperty Range axioms
-	#foreach( $prop in $objprops)
-		#foreach( $a in ${ontology.getAxioms($prop)})
-			#if( ${a.isOfType($AxiomType.OBJECT_PROPERTY_RANGE)})
-			${oci}.addRestriction(new MergedRestriction().addRestriction(
-			#toRestriction (${a.getRange()})
-			));
-			#end
+#end
+#foreach( $prop in $datprops)
+	#foreach( $a in ${ontology.getAxioms($prop)})
+		#if( ${a.isOfType($AxiomType.DATA_PROPERTY_RANGE)})
+		${oci}.addRestriction(new MergedRestriction().addRestriction(
+		##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
+		));
 		#end
 	#end
-	#foreach( $prop in $datprops)
-		#foreach( $a in ${ontology.getAxioms($prop)})
-			#if( ${a.isOfType($AxiomType.DATA_PROPERTY_RANGE)})
-			${oci}.addRestriction(new MergedRestriction().addRestriction(
-			##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
-			));
-			#end
-		#end
 
-	#end
+#end
 ##Check for EquivalentClass
-	#foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-			${oci}.addEquivalentClass(#toRestriction (${eqClass}));
-	#end
+#foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
+		${oci}.addEquivalentClass(#toRestriction (${eqClass}));
+#end
 ##Check for DisjointClass
-	#foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
-			${oci}.addDisjointClass(#toRestriction (${eqClass}));
-	#end
+#foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
+		${oci}.addDisjointClass(#toRestriction (${eqClass}));
+#end
 ##TODO Check for complement class
-			##${oci}.setComplementClass(#toRestriction (${eqClass}));
+##${oci}.setComplementClass(#toRestriction (${eqClass}));
 ##TODO add Individuals (need instance creator)
-			##${oci}.addInstance(instance);
+##${oci}.addInstance(instance);
 
 #end
 package #package($ontology);
@@ -317,75 +314,75 @@ public class #ontClassName($ontology) extends Ontology {
 	// Namespaces must follow this format
 	public static final String NAMESPACE = "${ontology.getOntologyID().getOntologyIRI().get().getNamespace()}";
 
-	public #ontClassName($ontology)(String ontURI) {
-		super(ontURI);
-	}
+public #ontClassName($ontology)(String ontURI) {
+	super(ontURI);
+}
 
-	public #ontClassName($ontology)() {
-		super(NAMESPACE);
-	}
+public #ontClassName($ontology)() {
+	super(NAMESPACE);
+}
 
-	public void create() {
-	##Ontology level
-		#foreach ( $a in ${ontology.getAnnotations()})
-		##$esc.getText('"') return &quot;
-		getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()} $quote);
-		#end
-		#foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
-		addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
-		#end
-	## Abstract Classes
-	## there are not OWL specification for Abstract Classes, this is used only for Enumerations
-	## Enumerations
-	#foreach( $axiom in ${ontology.getAxioms()})
-	#if ( "#isEnumeration(${axiom.getEntity()})"  == "true")
-		#set( $exe = ${enums.add(${axiom.getEntity()})})
-		OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewAbstractOntClassInfo(#className(${axiom.getEntity()}).MY_URI);
-		oci_#className(${axiom.getEntity()}).addSuperClass(ManagedIndividual.MY_URI);
-		oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
-		#getEnum(${axiom.getEntity()})
-		#foreach($enumInd in $enum) ## get Enumeration individuals
-				#className(${axiom.getEntity()}).$enumInd,
-		#end
-				});
+public void create() {
+##Ontology level
+#foreach ( $a in ${ontology.getAnnotations()})
+##$esc.getText('"') return &quot;
+getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()} $quote);
+#end
+#foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
+addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
+#end
+## Abstract Classes
+## there are not OWL specification for Abstract Classes, this is used only for Enumerations
+## Enumerations
+##
+#foreach( $axiom in ${ontology.getAxioms()})
+#if ( "#isEnumeration(${axiom.getEntity()})"  == "true")
+#set( $exe = ${enums.add(${axiom.getEntity()})})
+OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewAbstractOntClassInfo(#className(${axiom.getEntity()}).MY_URI);
+oci_#className(${axiom.getEntity()}).addSuperClass(ManagedIndividual.MY_URI);
+oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
+#getEnum(${axiom.getEntity()})
+#foreach($enumInd in $enum) ## get Enumeration individuals
+			#className(${axiom.getEntity()}).$enumInd,
 	#end
-	#end
+	});
+#end
+#end
 
-	## Classes
-	## Declare all Classes first
-	#foreach( $axiom in ${ontology.getAxioms()})
-	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
-	## exclude enumerations
-	OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index}) ;
-	#end
-	#end
+## Classes
+## Declare all Classes first
+#foreach( $axiom in ${ontology.getAxioms()})
+#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
+## exclude enumerations
+OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(#className(${axiom.getEntity()}).MY_URI, factory, ${foreach.index}) ;
+#end
+#end
 ##
 ObjectPropertySetup ops;
 DatatypePropertySetup dps;
-	#foreach( $axiom in ${ontology.getAxioms()})
-	#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()}
-			&&  "#isEnumeration(${axiom.getEntity()})"  != "true"))
-		#set($class = ${axiom.getEntity()})
-		#set($oci = "oci_${ #className ($axiom.getEntity())}")
-		#createClass($class $ontology $oci)
-	#end
-	#end
+#foreach( $axiom in ${ontology.getAxioms()})
+#if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
+#set($class = ${axiom.getEntity()})
+#set($oci = "oci_#className($axiom.getEntity())")
+#createClass($class $ontology $oci)
+#end
+#end
 
-	## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
-	## Generate iterable set
-	#set($allClasses = $ontology.getClassesInSignature($Imports.EXCLUDED))
-	#foreach( $a in $AxiomType.getAxiomsOfTypes($ontology.getAxioms($Imports.EXCLUDED), $AxiomType.DECLARATION))
-		#set($exec = $allClasses.remove($a.getEntity()))
-	#end
-	## itereate over set of classes referenced but not declared in this ontology
-	#foreach( $c in $allClasses)
-		## generate temporal OCI
-		#set($oci = "oci_ex_${foreach.index}")
-		## Try generating statements
-		#set($genClass = "#createClass($c $ontology $oci 'true')")
-		#if($genClass.contains($oci))
-			## if there is any output, then write it out
-			$oci = extendExistingOntClassInfo("${c.getIRI()}");
+## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
+## Generate iterable set
+#set($allClasses = $ontology.getClassesInSignature($Imports.EXCLUDED))
+#foreach( $a in $AxiomType.getAxiomsOfTypes($ontology.getAxioms($Imports.EXCLUDED), $AxiomType.DECLARATION))
+#set($exec = $allClasses.remove($a.getEntity()))
+#end
+## itereate over set of classes referenced but not declared in this ontology
+#foreach( $c in $allClasses)
+	## generate temporal OCI
+#set($oci = "oci_ex_${foreach.index}")
+## Try generating statements
+#set($genClass = "#createClass($c $ontology $oci 'true')")
+#if($genClass.contains($oci))
+	## if there is any output, then write it out
+$oci = extendExistingOntClassInfo("${c.getIRI()}");
 			$genClass
 		#end
 	#end
