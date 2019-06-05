@@ -1,0 +1,15 @@
+#set($axioms = $ontology.getAxioms())
+#foreach ($element in $ontology.getAxioms($AxiomType.DECLARATION))
+#if(${element.getSignature().iterator().next().isOWLClass()})
+#set($cls = ${element.getSignature().iterator().next().asOWLClass()})
+
+$AxiomType
+$EntitySearcher.class
+${EntitySearcher.getIndividuals($cls, $ontology)}
+
+##foreach($iterable in ${EntitySearcher.getAnnotations(${cls},${ontology})})
+##$iterable
+##end
+ 
+#end
+#end

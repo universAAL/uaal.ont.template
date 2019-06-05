@@ -3,9 +3,15 @@ package es.upm.tfo.lst;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.sql.Date;
+import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -15,6 +21,7 @@ import es.upm.tfo.lst.CodeGenerator.GenerateProject;
 import es.upm.tfo.lst.CodeGenerator.model.TemplateDataModel;
 import es.upm.tfo.lst.CodeGenerator.owl.OntologyLoader;
 import es.upm.tfo.lst.CodeGenerator.xmlparser.XmlParser;
+import uk.ac.manchester.cs.jfact.kernel.Ontology;
 
 public class CoreTest {
 
@@ -63,5 +70,30 @@ public class CoreTest {
 		}
 
 		assertTrue(genPro.getErrors().isEmpty());
+	}
+
+
+	
+	@Test
+	public void entitySearcherTest() {
+		 try {
+//			 	File ff =  new File("/src/main/resources/template/MavenProject.xml");
+//			 			System.out.println(ff.exists());
+				 	this.model=this.parser.generateXMLCoordinator("src/test/resources/coordinatorEs.xml");
+					this.genPro.setMainModel(this.model);
+					//set the ontology to project and recursive state
+					this.genPro.addOntology(this.ontologyLoader.loadOntology(this.webOntology), true);
+					//set output directory
+					this.genPro.setOutputFolder(this.baseOutput);
+					//optional: add value to variables. You can add extra variable plus the variables provided into XML file
+					this.genPro.setVariable("mavenArtifactID","test");
+					File f = new File(baseOutput);
+					f.mkdirs();
+					genPro.process();
+			} catch (Exception e) {
+				e.printStackTrace();
+				genPro.addError(e);
+			}
+		 
 	}
 }

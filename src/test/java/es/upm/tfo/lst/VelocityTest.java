@@ -94,5 +94,6 @@ public class VelocityTest {
 		this.template = engine.getTemplate("recursive.vm");
 		this.template.merge(context, writer);
 	}
+	
 
 }

@@ -31,6 +31,9 @@ import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -45,6 +48,7 @@ import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLDataUnionOf;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -72,7 +76,11 @@ import uk.ac.manchester.cs.jfact.JFactFactory;
  */
 public class OWLAPITest {
 
+
 	private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
+	//private static final String ONT_URL = "	http://svn.code.sf.net/p/oae/code/trunk/src/ontology/CTCAE-OAEview.owl";
+	//private static final String ONT_URL = "https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
+	//private static final String ONT_URL = "https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl";
 
 	static OWLOntology ontology, localOntology;
 	static OWLReasonerFactory reasonerFactory = null;
@@ -91,21 +99,21 @@ public class OWLAPITest {
 		reasoner = reasonerFactory.createReasoner(ontology);
 	}
 
-	@Before
-	public void start() {
-		System.err.flush();
-		System.out.flush();
-		System.err.println("");
-		System.err.println("================ Start of " + name.getMethodName() + " ================");
-
-	}
-
-	@After
-	public void end() {
-		System.out.flush();
-		System.err.flush();
-		System.err.println("================= End of " + name.getMethodName() + " =================");
-	}
+//	@Before
+//	public void start() {
+//		System.err.flush();
+//		System.out.flush();
+//		System.err.println("");
+//		System.err.println("================ Start of " + name.getMethodName() + " ================");
+//
+//	}
+//
+//	@After
+//	public void end() {
+//		System.out.flush();
+//		System.err.flush();
+//		System.err.println("================= End of " + name.getMethodName() + " =================");
+//	}
 
 	@Test
 	public void ontologyStats() {
@@ -303,4 +311,53 @@ public class OWLAPITest {
 			// build objects and add.
 		}
 	}
+	@Test
+	public void imports(){
+		
+		System.out.println("get import clousure");
+		for (OWLOntology iterable_element : ontology.getImportsClosure()) {
+			System.out.println( iterable_element.getOntologyID().getOntologyIRI().get().getNamespace()); 
+		}
+		System.out.println("get import ");
+		for (OWLOntology iterable_element : ontology.getImportsClosure()) {
+			System.out.println( iterable_element.getOntologyID().getOntologyIRI().get().getNamespace()); 
+		}
+		System.out.println("get import IRIS");
+		for (OWLImportsDeclaration iterable_element : ontology.getImportsDeclarations()) {
+			System.out.println( iterable_element); 
+		}
+	}
+
+	@Test
+	public void entitySearcherTest() {
+		for (OWLDeclarationAxiom axiom : ontology.getAxioms(AxiomType.DECLARATION)) {
+			if(axiom.getSignature().iterator().next().isOWLClass()) {
+				OWLClass cls =axiom.getSignature().iterator().next().asOWLClass();
+				for (OWLIndividual iterable_element : EntitySearcher.getIndividuals(cls, ontology)) {
+					System.out.println(iterable_element );
+				}
+			}
+		}
+		
+	}
+
+	@Test
+	public void annotationsTest() {
+		
+		for (OWLDeclarationAxiom axiom : ontology.getAxioms(AxiomType.DECLARATION)) {
+			if(axiom.getSignature().iterator().next().isOWLClass()) {
+				OWLClass cls =axiom.getSignature().iterator().next().asOWLClass();
+				for (OWLAnnotationAssertionAxiom iterable_element : ontology.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+					System.out.println(iterable_element.getSubject());	
+					System.out.println(cls);
+				}		
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	
 }
