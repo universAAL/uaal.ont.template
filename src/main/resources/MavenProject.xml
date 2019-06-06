@@ -36,8 +36,8 @@
 			<output>#parse('./common.vm')#set($aux = "#package($ontology)" )#if("#isEnumeration($class)" != "true")src/main/java/$aux.replace(".","/")/#className($class).java#end</output>
 			<imports>
 					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -46,8 +46,8 @@
 			<output>#parse('./common.vm')#set($g = "#package( $ontology )" )#if("#isEnumeration($class)"  == "true")src/main/java/$g.replace(".","/")/#className($class).java#end</output>
 			<imports>
 					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -56,8 +56,8 @@
 			<output>#parse('./common.vm')#set($g = "#package($ontology)" )src/main/java/$g.replace(".","/")/#ontClassName($ontology).java</output>
 			<imports>
 					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -65,8 +65,8 @@
 			<for>ontology</for>
 			<output>#parse('./common.vm')src/main/java/${PackageBase.replace(".","/")}/#ontFactory($ontology).java</output>
 			<imports>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQalifiedName>
-					<FullyQalifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQalifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
 			</imports>
 		</macro>
 
