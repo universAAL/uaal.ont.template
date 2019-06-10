@@ -1,5 +1,6 @@
 #parse('common.vm')
 #set ($quote ='"')
+#set($EscapeTool = $EscapeTool.class.forName('org.apache.velocity.tools.generic.EscapeTool'))##
 #license()
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
@@ -140,17 +141,25 @@ new URIRestriction() ##inline methods in URIRestriction
 #end
 ## =============== Create Class
 #macro( createClass $class $ontology $oci $nodefaults)
+#set($annotationPerClass = [])
 /*
  *  ${class.getIRI()}
  */
+ 
 ##Check for class annotations
-#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+#foreach($ann in ${ontology.getAxioms($AxiomType.ANNOTATION_ASSERTION)})
+#if($ann.getSubject().equals($class.getIRI()))
+#set($aux = $annotationPerClass.add($ann))
+#end
+#end
+
+#foreach($annotation in $annotationPerClass) {
 #if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-${oci}.setResourceLabel(\"${annotation.getValue()}\");
+${oci}.setResourceLabel($quote ${annotation.getValue()} $quote);
 #elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
-${oci}.setResourceComment(\"${annotation.getValue()}\");
+${oci}.setResourceComment($quote${annotation.getValue()} $quote);
 #else
-${oci}.getInfo().addToProperty(\"${annotation.getProperty().getIRI()}\","${annotation.getValue()}");
+${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI()}$quote,$quote${annotation.getValue()}$quote);
 #end
 #end
 ##Check for Named SubClassof
@@ -364,12 +373,13 @@ DatatypePropertySetup dps;
 #if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
 #set($class = ${axiom.getEntity()})
 #set($oci = "oci_#className($axiom.getEntity())")
+
 #createClass($class $ontology $oci)
 #end
 #end
 
 ## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
-## Generate iterable set
+##Generate iterable set
 #set($allClasses = $ontology.getClassesInSignature($Imports.EXCLUDED))
 #foreach( $a in $AxiomType.getAxiomsOfTypes($ontology.getAxioms($Imports.EXCLUDED), $AxiomType.DECLARATION))
 #set($exec = $allClasses.remove($a.getEntity()))
