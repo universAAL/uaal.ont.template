@@ -2,6 +2,7 @@
 #macro( license )
 #if ($isASL2)
 #set( $YEAR = $date.getYear() + 1900)
+#set($EntitySearcher=$EntitySearcher.class.forName('org.semanticweb.owlapi.search.EntitySearcher'))##
 /*
 	Copyright $YEAR $License-holder
 
