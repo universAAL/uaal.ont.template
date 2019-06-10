@@ -1,15 +1,27 @@
+
+#set($EntitySearcher=$EntitySearcher.class.forName('org.semanticweb.owlapi.search.EntitySearcher'))##
+
+
+#set($EntitySearcher=$EntitySearcher.class.forName('org.semanticweb.owlapi.search.EntitySearcher'))##
+
+
 #set($axioms = $ontology.getAxioms())
-#foreach ($element in $ontology.getAxioms($AxiomType.DECLARATION))
+#foreach ($element in $ontology.getAxioms($AxiomTypeConstants.DECLARATION))
 #if(${element.getSignature().iterator().next().isOWLClass()})
 #set($cls = ${element.getSignature().iterator().next().asOWLClass()})
+#*
+$cls
+$ontology
+EntitySearcher $EntitySearcher
+EntitySearcherMethods $EntitySearcherMethods
+$ontology.getAxioms($AxiomTypeConstants.DECLARATION)
+${EntitySearcherMethods.getAnnotatins()}
+*#
+##$cls
+##$ontology
+##${EntitySearcher.getAnnotations($cls,$ontology)}
+${EntitySearcher.getAnnotationAssertionAxioms($cls,$ontology)}
 
-$AxiomType
-$EntitySearcher.class
-${EntitySearcher.getIndividuals($cls, $ontology)}
 
-##foreach($iterable in ${EntitySearcher.getAnnotations(${cls},${ontology})})
-##$iterable
-##end
- 
 #end
 #end
