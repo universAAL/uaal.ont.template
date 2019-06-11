@@ -1,30 +1,29 @@
 #parse('common.vm')
 #set ($quote ='"')
-#set($EscapeTool = $EscapeTool.class.forName('org.apache.velocity.tools.generic.EscapeTool'))##
 #license()
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( "${classExpression.getProperty().getIRI()}",
-								 #toRestriction( ${classExpression.getFiller()}))
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote);
+#toRestriction( ${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-new SomeValuesFromRestriction( "${classExpression.getProperty().getIRI()}",
-								 #toRestriction( ${classExpression.getFiller()}))
+new SomeValuesFromRestriction( $quote ${classExpression.getProperty().getIRI()}$quote),
+#toRestriction(${classExpression.getFiller()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
-new ExactCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
+new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MIN_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MIN_CARDINALITY)
-new MinCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
+new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MAX_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MAX_CARDINALITY)
-new MaxCardinalityRestriction("${classExpression.getProperty().getIRI()}", ${classExpression.getCardinality()})
+new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
-new HasValueRestriction("${classExpression.getProperty().getIRI()}", Object) ##TODO
+new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, Object) ##TODO
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_COMPLEMENT_OF)
-new Complement( #toRestriction( ${classExpression.getOperand()}))
+new Complement( #toRestriction( ${classExpression.getOperand()}))##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_INTERSECTION_OF)
 new Intersection() {{
 #foreach( $operand in ${classExpression.getOperands()})
@@ -153,22 +152,22 @@ new URIRestriction() ##inline methods in URIRestriction
 #end
 #end
 
-#foreach($annotation in $annotationPerClass) {
+#foreach($annotation in $annotationPerClass)
 #if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
 ${oci}.setResourceLabel($quote ${annotation.getValue()} $quote);
-#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+#elseif(${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
 ${oci}.setResourceComment($quote${annotation.getValue()} $quote);
 #else
-${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI()}$quote,$quote${annotation.getValue()}$quote);
+${oci}.getInfo().addToProperty($quote ${annotation.getProperty().getIRI()} $quote ,$quote${annotation.getValue()}$quote);
 #end
 #end
 ##Check for Named SubClassof
-#set ( $isSuperClassSet = "false");
+#set ( $isSuperClassSet = "false")
 #foreach( $superClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
 #if(!${superClass.isAnonymous()} && ${superClass.isClassExpressionLiteral()} && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#Thing" && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#NamedIndivudual")
 #set ( $isSuperClassSet = "true");
 ##TODO: Resolve to NameSpace?
-${oci}.addSuperClass("${superClass.asOWLClass().getIRI()}");
+${oci}.addSuperClass($quote${superClass.asOWLClass().getIRI()}$quote);
 #elseif (${superClass.isAnonymous()} && !(${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
@@ -182,42 +181,42 @@ ${oci}.addSuperClass("${superClass.asOWLClass().getIRI()}");
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
 ##filter NOT Property Class Expressions
-	${oci}.addSuperClass(#toRestriction (${superClass}));
-	#end
+${oci}.addSuperClass(#toRestriction (${superClass}));
+#end
 #end
 	##TODO if superclass not set then:
 #if ( $isSuperClassSet == "false" && !$nodefaults)
-	${oci}.addSuperClass(ManagedIndividual.MY_URI);
+${oci}.addSuperClass(ManagedIndividual.MY_URI);##
 #end
 ## ObjectProperties
 #set($objprops = [])
-	#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
-		#if($prop.getDomain().equals($class))
-		#set($exec = ${objprops.add($prop.getProperty())})
-		ops = ${oci}.addObjectProperty(#className($class).#propVar($prop);
-		#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
-		ops.setAsymmetric();
-		#end
-		#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
-		ops.setFunctional();
-		#end
-		#if(${EntitySearcher.isInverseFunctional($prop.getProperty(), $ontology)})
-		ops.setInverseFunctional();
-		#end
-		#if(${EntitySearcher.isIrreflexive($prop.getProperty(), $ontology)})
-		ops.setIrreflexive();
-		#end
-		#if(${EntitySearcher.isReflexive($prop.getProperty(), $ontology)})
-		ops.setReflexive();
-		#end
-		#if(${EntitySearcher.isSymmetric($prop.getProperty(), $ontology)})
-		ops.setSymmetric();
-		#end
-		#if(${EntitySearcher.isTransitive($prop.getProperty(), $ontology)})
-		ops.setTransitive();
-		#end
-		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
-		ops.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
+#foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
+#if($prop.getDomain().equals($class))
+#set($exec = ${objprops.add($prop.getProperty())})
+ops = ${oci}.addObjectProperty(#className($class).#propVar($prop));##
+#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
+ops.setAsymmetric();
+#end
+#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
+ops.setFunctional();
+#end
+#if(${EntitySearcher.isInverseFunctional($prop.getProperty(), $ontology)})
+ops.setInverseFunctional();
+#end
+#if(${EntitySearcher.isIrreflexive($prop.getProperty(), $ontology)})
+ops.setIrreflexive();
+#end
+#if(${EntitySearcher.isReflexive($prop.getProperty(), $ontology)})
+ops.setReflexive();
+#end
+#if(${EntitySearcher.isSymmetric($prop.getProperty(), $ontology)})
+ops.setSymmetric();
+#end
+#if(${EntitySearcher.isTransitive($prop.getProperty(), $ontology)})
+ops.setTransitive();
+#end
+#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
+ops.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
 #end
 #foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
 ops.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
@@ -227,31 +226,31 @@ ops.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
 #end
 #foreach( $invProp in ${EntitySearcher.getInverses($prop.getProperty(), $ontology)})
 ops.setInverseOf("${invProp.getNamedProperty().getIRI()}");
-	#end
-	#end
+#end
+#end
 #end
 ## DataProperties
 #set($datprops = [])
-	#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
-		#if($prop.getDomain().equals($class))
-		#set($exec = ${datprops.add($prop.getProperty())})
-		dps = ${oci}.addDatatypeProperty(#className($class).#propVar($prop)
-		#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
-		dps.setFunctional();
-		#end
-		#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
-		dps.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
+#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
+#if($prop.getDomain().equals($class))
+#set($exec = ${datprops.add($prop.getProperty())})
+dps = ${oci}.addDatatypeProperty(#className($class).#propVar($prop)
+#if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
+dps.setFunctional();
+#end
+#foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
+dps.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
 #end
 #foreach( $eqProp in ${EntitySearcher.getEquivalentProperties($prop.getProperty(), $ontology)})
 dps.addEquivalentProperty("${eqProp.getNamedProperty().getIRI()}");
 #end
 #foreach( $disProp in ${EntitySearcher.getDisjointProperties($prop.getProperty(), $ontology)})
 dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
-	#end
-	#end
+#end
+#end
 #end
 ## RESTRICTIONS
-#foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)}) {
+#foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
 	#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
 				&& ${restriction.getSuperClass().isAnonymous()}
 				&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
@@ -265,40 +264,36 @@ dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
 	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
 	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
 	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) {
+	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) 
 	## filter only Property Class Expressions
-		${oci}.addRestriction(new MergedRestriction().addRestriction(
-		#toRestriction (${restriction.getSuperClass()})
-		));
+${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));
 	#end
 #end
 ## Restrictions defined through the ObjectProperty Range axioms
 #foreach( $prop in $objprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.OBJECT_PROPERTY_RANGE)})
-		${oci}.addRestriction(new MergedRestriction().addRestriction(
-		#toRestriction (${a.getRange()})
-		));
+${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction (${a.getRange()})));
 		#end
 	#end
 #end
 #foreach( $prop in $datprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.DATA_PROPERTY_RANGE)})
-		${oci}.addRestriction(new MergedRestriction().addRestriction(
-		##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
-		));
+${oci}.addRestriction(new MergedRestriction().addRestriction(
+##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
+));
 		#end
 	#end
 
 #end
 ##Check for EquivalentClass
 #foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-		${oci}.addEquivalentClass(#toRestriction (${eqClass}));
+${oci}.addEquivalentClass(#toRestriction (${eqClass}));
 #end
 ##Check for DisjointClass
 #foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
-		${oci}.addDisjointClass(#toRestriction (${eqClass}));
+${oci}.addDisjointClass(#toRestriction (${eqClass}));
 #end
 ##TODO Check for complement class
 ##${oci}.setComplementClass(#toRestriction (${eqClass}));
@@ -352,9 +347,9 @@ oci_#className(${axiom.getEntity()}).addSuperClass(ManagedIndividual.MY_URI);
 oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
 #getEnum(${axiom.getEntity()})
 #foreach($enumInd in $enum) ## get Enumeration individuals
-			#className(${axiom.getEntity()}).$enumInd,
-	#end
-	});
+#className(${axiom.getEntity()}).$enumInd,
+#end
+});
 #end
 #end
 
@@ -369,6 +364,7 @@ OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(#
 ##
 ObjectPropertySetup ops;
 DatatypePropertySetup dps;
+$esc
 #foreach( $axiom in ${ontology.getAxioms()})
 #if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
 #set($class = ${axiom.getEntity()})
