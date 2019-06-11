@@ -3,6 +3,7 @@
 #if ($isASL2)
 #set( $YEAR = $date.getYear() + 1900)
 #set($EntitySearcher=$EntitySearcher.class.forName('org.semanticweb.owlapi.search.EntitySearcher'))##
+
 /*
 	Copyright $YEAR $License-holder
 
@@ -63,11 +64,11 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase().replace(" ", "")##
 #end
 ## =========== get the java className for a given Ont Class
 #macro( className $class)
-#toFirstUpperCase("${class.getIRI().getFragment()}")
+#toFirstUpperCase("${class.getIRI().getFragment()}")##
 #end
 ## =========== get the Attribute string reffering to a property
 #macro( propVar $prop)##
-PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}
+PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}##
 #end
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
