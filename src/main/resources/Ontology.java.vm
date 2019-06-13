@@ -4,7 +4,7 @@
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote);##
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote),##
 #toRestriction( ${classExpression.getFiller()}))
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
@@ -36,7 +36,7 @@ new Union() {{##
 #end
 }}##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
-TypeURI.asTypeURI(${classExpression.getIRI()})##
+TypeURI.asTypeURI($quote${classExpression.getIRI()}$quote)##
 #end
 #end
 ## ============= Data Range to Type Restriction
@@ -192,7 +192,7 @@ ${oci}.addSuperClass(ManagedIndividual.MY_URI);##
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 #if($prop.getDomain().equals($class))
 #set($exec = ${objprops.add($prop.getProperty())})
-ops = ${oci}.addObjectProperty(#className($class).#propVar($prop));##
+ops = ${oci}.addObjectProperty(#className($class).#propVar($prop));
 #if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
 ops.setAsymmetric();
 #end
@@ -250,23 +250,22 @@ dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
 #end
 ## RESTRICTIONS
 #foreach ($restriction in ${ontology.getAxioms($class,$Imports.EXCLUDED)})
-	#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
-				&& ${restriction.getSuperClass().isAnonymous()}
-				&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
-	|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE)) 
-	## filter only Property Class Expressions
+#if (${restriction.isOfType($AxiomType.SUBCLASS_OF)}
+&& ${restriction.getSuperClass().isAnonymous()}
+&& (${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_ALL_VALUES_FROM
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_SOME_VALUES_FROM
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_SOME_VALUES_FROM
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_EXACT_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_EXACT_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MIN_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MIN_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_MAX_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
+|| ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))## filter only Property Class Expressions
 ${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));
-	#end
+#end
 #end
 ## Restrictions defined through the ObjectProperty Range axioms
 #foreach( $prop in $objprops)
