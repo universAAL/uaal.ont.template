@@ -293,7 +293,7 @@ ${oci}.addEquivalentClass(#toRestriction (${eqClass}));
 #end
 ##Check for DisjointClass
 #foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
-${oci}.addDisjointClass(#toRestriction (${eqClass}));
+${oci}.addDisjointClass(#toRestriction (${disClass}));
 #end
 ##TODO Check for complement class
 ##${oci}.setComplementClass(#toRestriction (${eqClass}));
