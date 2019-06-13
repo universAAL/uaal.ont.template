@@ -289,11 +289,11 @@ ${oci}.addRestriction(new MergedRestriction().addRestriction(
 #end
 ##Check for EquivalentClass
 #foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-${oci}.addEquivalentClass(#toRestriction (${eqClass}));
+${oci}.addEquivalentClass(#toRestriction (${eqClass}));##
 #end
 ##Check for DisjointClass
 #foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
-${oci}.addDisjointClass(#toRestriction (${disClass}));
+${oci}.addDisjointClass(#toRestriction (${disClass}));##
 #end
 ##TODO Check for complement class
 ##${oci}.setComplementClass(#toRestriction (${eqClass}));
