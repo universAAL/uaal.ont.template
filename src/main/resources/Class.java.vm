@@ -11,8 +11,14 @@ import org.universAAL.middleware.owl.*;
 
 /**
 ##Check for class annotations
+#set($annotationPerClass = [])
+#foreach($ann in ${ontology.getAxioms($AxiomType.ANNOTATION_ASSERTION)})
+#if($ann.getSubject().equals($class.getIRI()))
+#set($aux = $annotationPerClass.add($ann))
+#end
+#end
 #set( $comments = [])
-	#foreach($annotation in ${EntitySearcher.getAnnotations($class, $ontology)}) {
+	#foreach($annotation in $annotationPerClass) {
 		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
 			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
 		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
