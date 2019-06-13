@@ -154,11 +154,11 @@ new URIRestriction() ##inline methods in URIRestriction
 
 #foreach($annotation in $annotationPerClass)
 #if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-${oci}.setResourceLabel($quote ${annotation.getValue()} $quote);
+${oci}.setResourceLabel($quote${annotation.getValue().toString().replaceAll('"','""')}$quote);
 #elseif(${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
-${oci}.setResourceComment($quote${annotation.getValue()} $quote);
+${oci}.setResourceComment($quote${annotation.getValue().toString().replaceAll('"','""')} $quote);
 #else
-${oci}.getInfo().addToProperty($quote ${annotation.getProperty().getIRI()} $quote ,$quote${annotation.getValue()}$quote);
+${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString().replaceAll('"','""')}$quote ,$quote${annotation.getValue().toString().replaceAll('"','""')}$quote);
 #end
 #end
 ##Check for Named SubClassof
@@ -364,7 +364,6 @@ OntClassInfoSetup oci_#className(${axiom.getEntity()}) = createNewOntClassInfo(#
 ##
 ObjectPropertySetup ops;
 DatatypePropertySetup dps;
-$esc
 #foreach( $axiom in ${ontology.getAxioms()})
 #if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
 #set($class = ${axiom.getEntity()})
