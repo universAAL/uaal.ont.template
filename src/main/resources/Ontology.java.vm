@@ -4,12 +4,11 @@
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote);
-#toRestriction( ${classExpression.getFiller()}))##
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote);##
+#toRestriction( ${classExpression.getFiller()}))
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-new SomeValuesFromRestriction( $quote ${classExpression.getProperty().getIRI()}$quote),
-#toRestriction(${classExpression.getFiller()})##
+new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote),#toRestriction(${classExpression.getFiller()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
 new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
@@ -21,23 +20,23 @@ new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$qu
 new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
-new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, Object) ##TODO
+new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, Object)##TODO
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_COMPLEMENT_OF)
 new Complement( #toRestriction( ${classExpression.getOperand()}))##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_INTERSECTION_OF)
-new Intersection() {{
+new Intersection() {{##
 #foreach( $operand in ${classExpression.getOperands()})
 .addType( #toRestriction ($operand)) ##TODO!!!
 #end
-}}
+}}##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
-new Union() {{
+new Union() {{##
 #foreach( $operand in ${classExpression.getOperands()})
 .addType( #toRestriction ($operand)) ##TODO!!!
 #end
-}}
+}}##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
-TypeURI.asTypeURI("${classExpression.getIRI()}")
+TypeURI.asTypeURI(${classExpression.getIRI()})##
 #end
 #end
 ## ============= Data Range to Type Restriction
@@ -165,7 +164,7 @@ ${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toStrin
 #set ( $isSuperClassSet = "false")
 #foreach( $superClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
 #if(!${superClass.isAnonymous()} && ${superClass.isClassExpressionLiteral()} && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#Thing" && ${superClass.asOWLClass().getIRI()} != "http://www.w3.org/2002/07/owl#NamedIndivudual")
-#set ( $isSuperClassSet = "true");
+#set ( $isSuperClassSet = "true")
 ##TODO: Resolve to NameSpace?
 ${oci}.addSuperClass($quote${superClass.asOWLClass().getIRI()}$quote);
 #elseif (${superClass.isAnonymous()} && !(${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_ALL_VALUES_FROM
@@ -289,11 +288,12 @@ ${oci}.addRestriction(new MergedRestriction().addRestriction(
 #end
 ##Check for EquivalentClass
 #foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-${oci}.addEquivalentClass(#toRestriction (${eqClass}));##
+${oci}.addEquivalentClass(#toRestriction(${eqClass}));
 #end
 ##Check for DisjointClass
+
 #foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
-${oci}.addDisjointClass(#toRestriction (${disClass}));##
+${oci}.addDisjointClass(#toRestriction(${disClass}));
 #end
 ##TODO Check for complement class
 ##${oci}.setComplementClass(#toRestriction (${eqClass}));
