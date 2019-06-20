@@ -4,7 +4,7 @@
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote,#toRestriction( ${classExpression.getFiller()});)##
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote,#toRestriction( ${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
 new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toRestriction(${classExpression.getFiller()}))##
@@ -154,7 +154,7 @@ new URIRestriction() ##inline methods in URIRestriction
 #if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
 ${oci}.setResourceLabel($quote$esc.java(${annotation.getValue().toString()})$quote);
 #elseif(${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
-${oci}.setResourceComment($quote${annotation.getValue().toString().replaceAll('"','""')} $quote);
+${oci}.setResourceComment($quote$esc.java(${annotation.getValue().toString()})$quote);
 #else
 ${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString()}$quote ,$quote$esc.java(${annotation.getValue().toString()})$quote);
 #end
@@ -328,7 +328,7 @@ public void create() {
 ##Ontology level
 #foreach ( $a in ${ontology.getAnnotations()})
 ##$esc.getText('"') return &quot;
-getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()} $quote);
+getInfo().addToProperty($quote ${a.getProperty().getIRI()} $quote,$quote ${a.getValue().getSignature().iterator().next().getIRI().getFragment()}$quote);
 #end
 #foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
 addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
