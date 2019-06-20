@@ -4,11 +4,10 @@
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
-new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote),##
-#toRestriction( ${classExpression.getFiller()}))
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote,#toRestriction( ${classExpression.getFiller()});)##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
-new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote),#toRestriction(${classExpression.getFiller()})##
+new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
 new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
@@ -32,7 +31,7 @@ new Intersection() {{##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
 new Union() {{##
 #foreach( $operand in ${classExpression.getOperands()})
-.addType( #toRestriction ($operand)) ##TODO!!!
+addType( #toRestriction ($operand)); ##TODO!!!
 #end
 }}##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
@@ -46,13 +45,13 @@ new Complement( #toTypeRestriction( ${dataRange.getDataRange()}))
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_INTERSECTION_OF})
 new Intersection() {{
 #foreach( $operand in ${dataRange.getOperands()})
-.addType( #toTypeExpression($operand)) ##TODO!!!
+.addType( #toTypeExpression($operand)); ##TODO!!!
 #end
 }}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_UNION_OF})
 new Union() {{
 #foreach( $operand in ${dataRange.getOperands()})
-.addType( #toTypeExpression($operand)) ##TODO!!!
+addType( #toTypeExpression($operand)); ##TODO!!!
 #end
 }}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_ONE_OF})
@@ -153,11 +152,11 @@ new URIRestriction() ##inline methods in URIRestriction
 
 #foreach($annotation in $annotationPerClass)
 #if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-${oci}.setResourceLabel($quote${annotation.getValue().toString().replaceAll('"','""')}$quote);
+${oci}.setResourceLabel($quote$esc.java(${annotation.getValue().toString()})$quote);
 #elseif(${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
 ${oci}.setResourceComment($quote${annotation.getValue().toString().replaceAll('"','""')} $quote);
 #else
-${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString().replaceAll('"','""')}$quote ,$quote${annotation.getValue().toString().replaceAll('"','""')}$quote);
+${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString()}$quote ,$quote$esc.java(${annotation.getValue().toString()})$quote);
 #end
 #end
 ##Check for Named SubClassof
