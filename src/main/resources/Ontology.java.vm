@@ -192,7 +192,7 @@ ${oci}.addSuperClass($quote${superClass.asOWLClass().getIRI()}$quote);
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
 ##filter NOT Property Class Expressions
-${oci}.addSuperClass(#toRestriction (${superClass}));
+##${oci}.addSuperClass(#toRestriction (${superClass}));
 #end
 #end
 	##TODO if superclass not set then:
@@ -276,30 +276,30 @@ dps.addDisjointProperty("${disProp.getNamedProperty().getIRI()}");
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))## filter only Property Class Expressions
-${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));
+##${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));
 #end
 #end
 ## Restrictions defined through the ObjectProperty Range axioms
 #foreach( $prop in $objprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.OBJECT_PROPERTY_RANGE)})
-${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction (${a.getRange()})));
+##${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction (${a.getRange()})));
 		#end
 	#end
 #end
 #foreach( $prop in $datprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.DATA_PROPERTY_RANGE)})
-${oci}.addRestriction(new MergedRestriction().addRestriction(
+##${oci}.addRestriction(new MergedRestriction().addRestriction(
 ##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
-));
+##));
 		#end
 	#end
 
 #end
 ##Check for EquivalentClass
 #foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-${oci}.addEquivalentClass(#toRestriction(${eqClass}));
+##${oci}.addEquivalentClass(#toRestriction(${eqClass}));
 #end
 ##Check for DisjointClass
 
@@ -399,8 +399,8 @@ DatatypePropertySetup dps;
 #if($genClass.contains($oci))
 	## if there is any output, then write it out
 $oci = extendExistingOntClassInfo("${c.getIRI()}");
-			$genClass
-		#end
-	#end
-	}
+$genClass
+#end
+#end
+}
 }
