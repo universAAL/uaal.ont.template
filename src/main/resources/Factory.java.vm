@@ -26,6 +26,7 @@ return new #className(${axiom.getEntity()})(instanceURI);
 }
 return null;
 }
+}
 #*
     #foreach($o in ${ontology.getAxioms()})
         #if(${o.getSignature().iterator().next().isOWLClass()} && ${o.isOfType($AxiomType.DECLARATION)}) 

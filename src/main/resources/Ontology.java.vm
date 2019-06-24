@@ -29,13 +29,20 @@ new Intersection() {{##
 #end
 }}##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
-new Union() {{##
+new Union()##
 #foreach( $operand in ${classExpression.getOperands()})
-addType( #toRestriction ($operand)); ##TODO!!!
+.of(#toRestriction($operand)) ##TODO!!!
 #end
-}}##
+##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
 TypeURI.asTypeURI($quote${classExpression.getIRI()}$quote)##
+#end
+#end
+## ============= build union object (double-brackets initialization is not working)
+#macro(buindUion $classExpression)
+u = new Union();
+#foreach( $operand in ${classExpression.getOperands()})
+u.addType( #toRestriction ($operand)); ##TODO!!!
 #end
 #end
 ## ============= Data Range to Type Restriction
