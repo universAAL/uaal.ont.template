@@ -28,6 +28,7 @@ new Intersection() {{##
 .addType( #toRestriction ($operand)) ##TODO!!!
 #end
 }}##
+
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
 new Union()##
 #foreach( $operand in ${classExpression.getOperands()})
@@ -398,7 +399,7 @@ DatatypePropertySetup dps;
 #set($genClass = "#createClass($c $ontology $oci 'true')")
 #if($genClass.contains($oci))
 	## if there is any output, then write it out
-$oci = extendExistingOntClassInfo("${c.getIRI()}");
+OntClassInfoSetup $oci = extendExistingOntClassInfo($quote${c.getIRI()}$quote);
 $genClass
 #end
 #end
