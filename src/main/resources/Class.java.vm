@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.owl.*;
+import org.universAAL.ontology.device.Sensor;
 
 
 /**
@@ -126,7 +127,7 @@ public ${rangeType}[] get$propName() {
 			List returnList = new ArrayList();
 			if (propList != null)
 				returnList.add(($rangeType) propList);
-			return (${rangeType}[]) returnList.toArray(new $rangeType[0]);
+			return (${rangeType}[]) returnList.toArray(new ${rangeType}[0]);
 		}
 	}
 
