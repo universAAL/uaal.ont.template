@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.universAAL.middleware.rdf.Resource;
 import org.universAAL.middleware.owl.*;
-import org.universAAL.ontology.device.Sensor;
 
 
 /**
@@ -122,7 +121,7 @@ public class #className($class) extends #resolveSuperClass($class){
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
-			return (${rangeType}[]) ((List) propList).toArray(new Sensor[0]);
+			return (${rangeType}[]) ((List) propList).toArray(new ${rangeType}[0]);
 		} else {
 			List returnList = new ArrayList();
 			if (propList != null)
