@@ -60,12 +60,11 @@ public class #className($class) extends #resolveSuperClass($class){
 
 	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 ## iterate over Props
-
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
-#if($prop.getDomain().equals($class))
+##if($prop.getDomain().equals($class))
 	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
-#end
+##end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals($class))
 	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
@@ -107,7 +106,7 @@ public class #className($class) extends #resolveSuperClass($class){
 	}
 ## Macros for Properties getters and setters
 #macro( propGet $propName $rangeType $propVar)
-//propget
+//prop get
 	public $rangeType get$propName() {
 		return ($rangeType) props.get($propVar);
 	}
@@ -118,6 +117,7 @@ public class #className($class) extends #resolveSuperClass($class){
 #end
 ##
 #macro( propList $propName $rangeType $propVar)##
+//prop list
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
@@ -184,13 +184,12 @@ public ${rangeType}[] get$propName() {
 #end
 ## Iterate over Property Getters and Setters
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
-##if($prop.getDomain().equals($class))##evaluate false
+##if($prop.getDomain().equals($class))##always evaluate false
 #set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
 #set( $propName = "#toFirstUpperCase($propName)")
 ## TODO determine max cardinality (including Exact)
 ## TODO determine rangeType
 #set($rangeType = "ManagedIndividual")
-//maxCardinality $maxCardinality
 #if($maxCardinality == 1)
 ## case cardinality 0:1 1:1
 #propGet($propName $rangeType "#propVar($prop)")
