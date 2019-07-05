@@ -170,7 +170,7 @@ ${oci}.setResourceComment($quote$esc.java(${annotation.getValue().toString()})$q
 #else
 #set($escaped_string =${annotation.getValue().toString()})
 #end
-${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString()}$quote,$quote${scaped_string}$quote);
+${oci}.getInfo().addToProperty($quote${annotation.getProperty().getIRI().toString()}$quote,$quote${escaped_string}$quote);
 #end
 #end
 ##Check for Named SubClassof
@@ -380,25 +380,23 @@ DatatypePropertySetup dps;
 #if(${axiom.isOfType($AxiomType.DECLARATION)} && ${axiom.getEntity().isOWLClass()} &&  "#isEnumeration(${axiom.getEntity()})"  != "true")
 #set($class = ${axiom.getEntity()})
 #set($oci = "oci_#className($axiom.getEntity())")
-
 #createClass($class $ontology $oci)
 #end
 #end
-
 ## TODO: Iterate over axioms which apply to entities (Classes) not defined in this ontology
 ##Generate iterable set
 #set($allClasses = $ontology.getClassesInSignature($Imports.EXCLUDED))
-#foreach( $a in $AxiomType.getAxiomsOfTypes($ontology.getAxioms($Imports.EXCLUDED), $AxiomType.DECLARATION))
+#foreach( $a in $ontology.getAxioms($AxiomType.DECLARATION) )
 #set($exec = $allClasses.remove($a.getEntity()))
 #end
 ## itereate over set of classes referenced but not declared in this ontology
 #foreach( $c in $allClasses)
-	## generate temporal OCI
+## generate temporal OCI
 #set($oci = "oci_ex_${foreach.index}")
 ## Try generating statements
 #set($genClass = "#createClass($c $ontology $oci 'true')")
 #if($genClass.contains($oci))
-	## if there is any output, then write it out
+## if there is any output, then write it out
 OntClassInfoSetup $oci = extendExistingOntClassInfo($quote${c.getIRI()}$quote);
 $genClass
 #end

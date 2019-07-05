@@ -105,10 +105,10 @@ public class #className($class) extends #resolveSuperClass($class){
 ## TODO iterate over Manadatory props, check if exsits
 		return true;
 	}
-
 ## Macros for Properties getters and setters
 #macro( propGet $propName $rangeType $propVar)
-	public $prangeType get$propName() {
+//propget
+	public $rangeType get$propName() {
 		return ($rangeType) props.get($propVar);
 	}
 
@@ -181,22 +181,23 @@ public ${rangeType}[] get$propName() {
 			props.remove(#propVar($prop));
 		}
 	}
-#end##
+#end
 ## Iterate over Property Getters and Setters
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
-#if($prop.getDomain().equals($class))
+##if($prop.getDomain().equals($class))##evaluate false
 #set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
 #set( $propName = "#toFirstUpperCase($propName)")
 ## TODO determine max cardinality (including Exact)
 ## TODO determine rangeType
 #set($rangeType = "ManagedIndividual")
+//maxCardinality $maxCardinality
 #if($maxCardinality == 1)
 ## case cardinality 0:1 1:1
 #propGet($propName $rangeType "#propVar($prop)")
 #else
 ## case cardinality 0:n 1:n
 #propList($propName $rangeType "#propVar($prop)")
-#end
+##end
 #end
 #end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
