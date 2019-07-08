@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template xmlns="http://www.example.org/exampleTemplate "
+	xmlns:x="http://www.w3.org/2001/XMLSchema-instance"
+	x:schemaLocation="http://www.example.org/exampleTemplate schema.xsd">
+	<template-name>universAAL Ontology full maven</template-name>
+	<template-version>${project.version}</template-version>
+	<template-description>Generates a java project containing the
+		java clases necesary to represent the ontologies in universAAL
+	</template-description>
+	<variables>
+		<variable>
+			<name>PackageBase</name>
+			<default>org.universAAL.ontology</default>
+			<required>true</required>
+			<description>Set the base package name for the project, ontologies
+				will be outputed to subpackages.
+			</description>
+		</variable>
+		<variable>
+			<name>isASL2</name>
+			<default></default>
+			<required>false</required>
+			<description>set to true, for adding Apache Software License V2.0</description>
+		</variable>
+	</variables>
+	<macros>
+		<macro>
+			<template>Class.java.vm</template>
+			<for>class</for>
+			<output>#parse('./common.vm')#set($aux = "#package($ontology)" )#if("#isEnumeration($class)" != "true")$aux.replace(".","/")/#className($class).java#end</output>
+			<imports>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
+			</imports>
+		</macro>
+		<macro>
+			<template>Enumeration.java.vm</template>
+			<for>class</for>
+			<output>#parse('./common.vm')#set($g = "#package( $ontology )" )#if("#isEnumeration($class)"  == "true")$g.replace(".","/")/#className($class).java#end</output>
+			<imports>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
+			</imports>
+		</macro>
+		<macro>
+			<template>Ontology.java.vm</template>
+			<for>ontology</for>
+			<output>#parse('./common.vm')#set($g = "#package($ontology)" )$g.replace(".","/")/#ontClassName($ontology).java</output>
+			<imports>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
+			</imports>
+		</macro>
+		<macro>
+			<template>Factory.java.vm</template>
+			<for>ontology</for>
+			<output>#parse('./common.vm')${PackageBase.replace(".","/")}/#ontFactory($ontology).java</output>
+			<imports>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
+					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
+			</imports>
+		</macro>
+		<macro>
+			<template>Activator.java.vm</template>
+			<for>project</for>
+			<output>${PackageBase.replace(".","/")}/Activator.java</output>
+		</macro>
+	</macros>
+</Template>
