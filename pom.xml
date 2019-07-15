@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>codegenerator</artifactId>
-    <groupId>es.upm.tfo.lst</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>org.universAAL</groupId>
+    <artifactId>uAAL.pom</artifactId>
+    <version>3.4.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.universAAL.support</groupId>
   <artifactId>codegenerator.template.uAAL</artifactId>
 
-  <name>universAAL template for code Generator</name>
+  <name>universAAL templates for code Generator</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,6 +56,7 @@
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-api</artifactId>
 	    <version>1.7.25</version>
+	    <scope>test</scope>
 	 </dependency>
 
   </dependencies>
