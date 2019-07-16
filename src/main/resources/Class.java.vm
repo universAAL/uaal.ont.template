@@ -60,14 +60,23 @@ public class #className($class) extends #resolveSuperClass($class){
 
 	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 ## iterate over Props
+//OBJECT_PROPERTY_DOMAIN
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 ##if($prop.getDomain().equals($class))
-	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
+#set($prop_var = "#propVar($prop)")
+#if(!$prop_var.isEmpty())
+public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
+#end
 #end
 ##end
+//DATA_PROPERTY_DOMAIN
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals($class))
-	public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
+#set($state = "#propVar($prop)")
+#if(!$state.isEmpty())
+public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
+#end
+	
 #end
 #end
 	public #className($class)() {
@@ -117,7 +126,7 @@ public class #className($class) extends #resolveSuperClass($class){
 #end
 ##
 #macro( propList $propName $rangeType $propVar)##
-//prop list
+//macro prop list -> $propName
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
