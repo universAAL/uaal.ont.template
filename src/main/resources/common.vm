@@ -68,7 +68,9 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase().replace(" ", "")##
 #end
 ## =========== get the Attribute string reffering to a property
 #macro( propVar $prop)##
+#if(${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()})
 PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}##
+#end
 #end
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
