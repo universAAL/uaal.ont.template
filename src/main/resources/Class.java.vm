@@ -56,11 +56,15 @@ import org.universAAL.middleware.owl.*;
 #end
 $result##
 #end
+#set($main_class_name = "#className($class)")
+#set($main_sclass_name = "#resolveSuperClass($class)")
+#if($main_class_name.equals($main_sclass_name))
+public class #className($class){
+#else
 public class #className($class) extends #resolveSuperClass($class){
-
-	public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
+#end
+public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 ## iterate over Props
-//OBJECT_PROPERTY_DOMAIN
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 ##if($prop.getDomain().equals($class))
 #set($prop_var = "#propVar($prop)")
@@ -69,7 +73,6 @@ public static final String #propVar($prop) = #resolveURI(${prop.getProperty().ge
 #end
 #end
 ##end
-//DATA_PROPERTY_DOMAIN
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals($class))
 #set($state = "#propVar($prop)")
