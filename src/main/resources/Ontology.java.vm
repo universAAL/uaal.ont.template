@@ -205,13 +205,18 @@ ${oci}.addSuperClass(ManagedIndividual.MY_URI);##
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
 #if($prop.getDomain().equals($class))
 #set($exec = ${objprops.add($prop.getProperty())})
-ops = ${oci}.addObjectProperty(#className($class).#propVar($prop));
-#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
-ops.setAsymmetric();
-#end
+#set($result_propvar = "#propVar($prop)")
+#if($result_propvar)
+#set($result_propvar = "#className($class).#propVar($prop)")
+ops = ${oci}.addObjectProperty($result_propvar);##
 #if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
 ops.setFunctional();
 #end
+#end
+#if(${EntitySearcher.isAsymmetric($prop.getProperty(), $ontology)})
+ops.setAsymmetric();
+#end
+
 #if(${EntitySearcher.isInverseFunctional($prop.getProperty(), $ontology)})
 ops.setInverseFunctional();
 #end
@@ -246,10 +251,16 @@ ops.setInverseOf("${invProp.getNamedProperty().getIRI()}");
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals($class))
 #set($exec = ${datprops.add($prop.getProperty())})
-dps = ${oci}.addDatatypeProperty(#className($class).#propVar($prop)
+#set($result_prop = "#propVar($prop)")
+#set($is_empty = $result_prop.isEmpty() )
+#if($result_prop && !$is_empty )
+#set($result_prop = "#className($class).#propVar($prop)")
+dps = ${oci}.addDatatypeProperty($result_prop)
 #if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
 dps.setFunctional();
 #end
+#end
+
 #foreach( $superProp in ${EntitySearcher.getSuperProperties($prop.getProperty(), $ontology)})
 dps.addSuperProperty("${superProp.getNamedProperty().getIRI()}");
 #end
@@ -364,7 +375,6 @@ oci_#className(${axiom.getEntity()}).toEnumeration(new ManagedIndividual[] {
 });
 #end
 #end
-
 ## Classes
 ## Declare all Classes first
 #foreach( $axiom in ${ontology.getAxioms()})
