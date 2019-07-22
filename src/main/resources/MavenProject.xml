@@ -38,6 +38,7 @@
 					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
 					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
 					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
+					<FullyQualifiedName>java.util.Collections</FullyQualifiedName>
 			</imports>
 		</macro>
 		<macro>
@@ -48,6 +49,8 @@
 					<FullyQualifiedName>org.semanticweb.owlapi.model.AxiomType</FullyQualifiedName>
 					<FullyQualifiedName>org.semanticweb.owlapi.model.ClassExpressionType</FullyQualifiedName>
 					<FullyQualifiedName>org.semanticweb.owlapi.search.EntitySearcher</FullyQualifiedName>
+					<FullyQualifiedName>java.util.Collections</FullyQualifiedName>
+					
 			</imports>
 		</macro>
 		<macro>
