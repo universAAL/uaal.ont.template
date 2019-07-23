@@ -18,7 +18,7 @@
 		</variable>
 		<variable>
 			<name>isASL2</name>
-			<default></default>
+			<default>false</default>
 			<required>false</required>
 			<description>set to true, for adding Apache Software License V2.0</description>
 		</variable>
