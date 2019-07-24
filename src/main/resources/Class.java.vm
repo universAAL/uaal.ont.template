@@ -131,6 +131,7 @@ public static final String #propVar($prop) = #resolveURI(${prop.getProperty().ge
 ##
 #macro( propList $propName $rangeType $propVar)##
 //macro prop list -> $propName
+
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
@@ -206,11 +207,10 @@ public ${rangeType}[] get$propName() {
 		}
 	}
 #end
+#set($maxCardinality=0)
 
-
-
+#set($rangeType ="ManagedIndividual")
 ## Iterate over Property Getters and Setters
-//getters and setters for OBJECT_PROPERTY_DOMAIN
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)})
 	#if(${prop.getDomain().equals($class)})
 		#set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
@@ -222,7 +222,6 @@ public ${rangeType}[] get$propName() {
 			## case cardinality 0:1 1:1
 			#propGet($propName $rangeType "#propVar($prop)")
 		#else
-			//not cardinality matched OBJECT_PROPERTY_DOMAIN
 			## case cardinality 0:n 1:n
 			#propList($propName $rangeType "#propVar($prop)")
 		#end
@@ -231,35 +230,34 @@ public ${rangeType}[] get$propName() {
 #end
 
 
-
-
-#foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
-	#if(${prop.getDomain().equals($class)})
+#foreach( $data_prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
+	#if(${data_prop.getDomain().equals($class)})
 		## TODO determine max cardinality
 		## TODO determine rangeType
 		##set ($ragneType = "Object")
+		#set( $propName = "${data_prop.getProperty().getSignature().iterator().next().getIRI().getFragment()}")
+		#set( $propName = "#toFirstUpperCase($propName)")
 		#if($maxCardinality == 1)
 			#if($rangeType == "Boolean")
 			## subcase 1:1 0:1, boolean (is_)
 				public boolean is$propName() {
-					return (($rangeType) props.get(#propVar($prop))).booleanValue();
+					return (($rangeType) props.get(#propVar($data_prop))).booleanValue();
 				}
 
 				public void setX($rangeType arg) {
-					props.put(#propVar($prop), arg);
+					props.put(#propVar($data_prop), arg);
 				}
 
 				public void setX(boolean arg) {
-					props.put(#propVar($prop), Boolean.valueOf(arg));
+					props.put(#propVar($data_prop), Boolean.valueOf(arg));
 				}
 			#else
 			## genericcase cardinality 0:1 1:1
-			#propGet($propName $rangeType "#propVar($prop)")
+			#propGet($propName $rangeType "#propVar($data_prop)")
 			#end
 		#else
 			## case cardinality 0:n 1:n
-			//not cardinality matched DATA_PROPERTY_DOMAIN
-			#propList($propName $rangeType "#propVar($prop)")
+			#propList($propName $rangeType "#propVar($data_prop)")
 		#end
 	#end
 #end

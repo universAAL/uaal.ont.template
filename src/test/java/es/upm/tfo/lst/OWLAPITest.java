@@ -77,10 +77,10 @@ import uk.ac.manchester.cs.jfact.JFactFactory;
 public class OWLAPITest {
 
 
-	private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
+	//private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
 	//private static final String ONT_URL = "	http://svn.code.sf.net/p/oae/code/trunk/src/ontology/CTCAE-OAEview.owl";
 	//private static final String ONT_URL = "https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
-	//private static final String ONT_URL = "https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl";
+	private static final String ONT_URL = "https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl";
 
 	static OWLOntology ontology, localOntology;
 	static OWLReasonerFactory reasonerFactory = null;
@@ -356,7 +356,12 @@ public class OWLAPITest {
 		
 	}
 	
-	
+	@Test
+	public void toDelete() {
+		for (OWLDataPropertyDomainAxiom iterable_element : ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN)) {
+			System.out.println(iterable_element.getProperty().getSignature().iterator().next().getIRI().getFragment());
+		}
+	}
 	
 	
 	
