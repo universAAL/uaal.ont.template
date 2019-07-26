@@ -119,7 +119,8 @@ public static final String #propVar($prop) = #resolveURI(${prop.getProperty().ge
 	}
 ## Macros for Properties getters and setters
 #macro( propGet $propName $rangeType $propVar)
-//prop get
+//macro propGet
+//propVar $propVar
 	public $rangeType get$propName() {
 		return ($rangeType) props.get($propVar);
 	}
@@ -131,7 +132,7 @@ public static final String #propVar($prop) = #resolveURI(${prop.getProperty().ge
 ##
 #macro( propList $propName $rangeType $propVar)##
 //macro prop list -> $propName
-
+//propVar -> $propVar
 public ${rangeType}[] get$propName() {
 		Object propList = props.get($propVar);
 		if (propList instanceof List) {
@@ -220,9 +221,12 @@ public ${rangeType}[] get$propName() {
 		#set($rangeType = "ManagedIndividual")
 		#if($maxCardinality == 1)
 			## case cardinality 0:1 1:1
+			//DATA_PROPERTY_DOMAIN "#propVar($prop)"
 			#propGet($propName $rangeType "#propVar($prop)")
 		#else
 			## case cardinality 0:n 1:n
+			//***************************************** "#propVar($prop)"
+			//DATA_PROPERTY_DOMAIN "#propVar($prop)"
 			#propList($propName $rangeType "#propVar($prop)")
 		#end
 	#end
@@ -231,7 +235,7 @@ public ${rangeType}[] get$propName() {
 
 
 #foreach( $data_prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
-	#if(${data_prop.getDomain().equals($class)})
+#if(${data_prop.getDomain().equals($class)})
 		## TODO determine max cardinality
 		## TODO determine rangeType
 		##set ($ragneType = "Object")
@@ -253,10 +257,12 @@ public ${rangeType}[] get$propName() {
 				}
 			#else
 			## genericcase cardinality 0:1 1:1
+			//DATA_PROPERTY_DOMAIN propGet $data_prop "#propVar($data_prop)"
 			#propGet($propName $rangeType "#propVar($data_prop)")
 			#end
 		#else
 			## case cardinality 0:n 1:n
+			//DATA_PROPERTY_DOMAIN propList $data_prop "#propVar($data_prop)"
 			#propList($propName $rangeType "#propVar($data_prop)")
 		#end
 	#end

@@ -33,6 +33,8 @@ public class CoreTest {
 	private final String pizza_ontology ="https://protege.stanford.edu/ontologies/pizza/pizza.owl";
 	private final String uaal_device ="http://ontology.universaal.org/Device.owl";
 	private final String uaal_lightning ="http://ontology.universaal.org/Lighting.owl";
+	private final String uaal_health ="http://ontology.universaal.org/Health.owl";
+	
 	
 	private final String baseOutput="target/generated/";
 	private OWLOntologyManager ontManager;
@@ -76,7 +78,7 @@ public class CoreTest {
 			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
 				this.genPro.setMainModel(this.model);
 				//set the ontology to project and recursive state
-				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_lightning), true);
+				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_lightning), false);
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"lightning/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
@@ -92,8 +94,6 @@ public class CoreTest {
 		assertTrue(genPro.getErrors().isEmpty());
 	}
 	
-	
-	
 	@Test
 	public void DeviceUAALTest() {
 			
@@ -101,7 +101,7 @@ public class CoreTest {
 			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
 				this.genPro.setMainModel(this.model);
 				//set the ontology to project and recursive state
-				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_device), true);
+				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_device), false);
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"device/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
@@ -116,4 +116,28 @@ public class CoreTest {
 
 		assertTrue(genPro.getErrors().isEmpty());
 	}
+
+	@Test
+	public void HealthTest() {
+		
+		 try {
+			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
+				this.genPro.setMainModel(this.model);
+				//set the ontology to project and recursive state
+				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_health), false);
+				//set output directory
+				this.genPro.setOutputFolder(this.baseOutput+"health/");
+				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
+				this.genPro.setVariable("mavenArtifactID","test");
+				File f = new File(this.baseOutput+"health/");
+				f.mkdirs();
+				genPro.process();
+		} catch (Exception e) {
+			e.printStackTrace();
+			genPro.addError(e);
+		}
+
+		assertTrue(genPro.getErrors().isEmpty());
+	}
+
 }

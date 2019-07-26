@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,34 +29,26 @@ import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLDataComplementOf;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
-import org.semanticweb.owlapi.model.OWLDataUnionOf;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -69,6 +59,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
 import uk.ac.manchester.cs.jfact.JFactFactory;
+import uk.ac.manchester.cs.owl.owlapi.OWLObjectCardinalityRestrictionImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLObjectExactCardinalityImpl;
 
 /**
  * @author amedrano
@@ -80,7 +72,8 @@ public class OWLAPITest {
 	//private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
 	//private static final String ONT_URL = "	http://svn.code.sf.net/p/oae/code/trunk/src/ontology/CTCAE-OAEview.owl";
 	//private static final String ONT_URL = "https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
-	private static final String ONT_URL = "https://raw.githubusercontent.com/monarch-initiative/GENO-ontology/develop/src/ontology/geno.owl";
+	//private static final String ONT_URL = "http://ontology.universaal.org/Device.owl";
+	private static final String ONT_URL="https://gitlab.lst.tfo.upm.es/ebuhid/semantic-alignment/raw/master/SemanticAlignment.owl";
 
 	static OWLOntology ontology, localOntology;
 	static OWLReasonerFactory reasonerFactory = null;
@@ -357,12 +350,42 @@ public class OWLAPITest {
 	}
 	
 	@Test
-	public void toDelete() {
-		for (OWLDataPropertyDomainAxiom iterable_element : ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN)) {
-			System.out.println(iterable_element.getProperty().getSignature().iterator().next().getIRI().getFragment());
+	public void getRangeOfProperty() {
+		for (OWLObjectPropertyDomainAxiom iterable_element : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN)) {
+			//System.out.println(iterable_element );
+			this.printRange(iterable_element);
+			System.out.println("........");
 		}
 	}
 	
 	
+	private void printRange(OWLObjectPropertyDomainAxiom v) {
+		for (OWLObjectPropertyRangeAxiom iterable_element : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_RANGE)) {
+			
+		
+				if(iterable_element.getProperty().equals(v.getProperty())) {
+					OWLClassExpression range = iterable_element.getRange();
+					System.out.println(range);
+					for (OWLClassExpression cls_exp : range.getNestedClassExpressions()) {
+						if(cls_exp instanceof OWLObjectCardinalityRestrictionImpl) {
+							OWLObjectCardinalityRestrictionImpl g =(OWLObjectCardinalityRestrictionImpl)cls_exp;
+							System.out.println("getCardinality() "+g.getCardinality());
+							System.out.println("getClassExpressionType() "+g.getClassExpressionType());
+							
+						} 
+						
+					}
+		
+				}
+		}
+	}
+	
+	@Test
+	public void toDelete() {
+		for (OWLDataPropertyDomainAxiom r : ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN)) {
+			//.getNamedProperty().getIRI().getFragment().toUpperCase()
+			System.out.println(r.getProperty().getSignature().iterator().next().getIRI().getFragment().toUpperCase());
+		}
+	}
 	
 }

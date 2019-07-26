@@ -255,7 +255,7 @@ ops.setInverseOf("${invProp.getNamedProperty().getIRI()}");
 #set($is_empty = $result_prop.isEmpty() )
 #if($result_prop && !$is_empty )
 #set($result_prop = "#className($class).#propVar($prop)")
-dps = ${oci}.addDatatypeProperty($result_prop)
+dps = ${oci}.addDatatypeProperty($result_prop);
 #if(${EntitySearcher.isFunctional($prop.getProperty(), $ontology)})
 dps.setFunctional();
 #end

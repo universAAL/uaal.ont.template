@@ -71,6 +71,9 @@ $str.substring(0,$str.lastIndexOf(".")).toLowerCase().replace(" ", "")##
 #if(${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()})
 PROP_${prop.getProperty().getNamedProperty().getIRI().getFragment().toUpperCase()}##
 #end
+#if(${prop.getProperty().getSignature().iterator().next().getIRI().getFragment().toUpperCase()})
+PROP_${prop.getProperty().getSignature().iterator().next().getIRI().getFragment().toUpperCase()}##
+#end
 #end
 ## =========== determine if class corresponds to an enumeration, returns "true" iif it is an enumeration.
 #macro( isEnumeration $class)##
@@ -105,4 +108,13 @@ $res
 ## ============ template stamp
 #macro ( templateStamp)
 Created on $date using ${project.getMainModel().getName()} template, version ${project.getMainModel().getVersion()}
+#end
+## ============ determine rangetype
+#macro(getRangeType $objProp)
+
+#end
+## ============ get cardinality
+#macro(getCardinality $objProp)
+##set($casted = $someObject.class.forName('target.class.name').cast($sourceObject))
+
 #end
