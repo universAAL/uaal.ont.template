@@ -77,6 +77,7 @@ public class CoreTest {
 		 try {
 			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
 				this.genPro.setMainModel(this.model);
+				
 				//set the ontology to project and recursive state
 				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_lightning), false);
 				//set output directory

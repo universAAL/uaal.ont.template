@@ -18,7 +18,7 @@ import org.universAAL.middleware.owl.*;
 #end
 #end
 #set( $comments = [])
-	#foreach($annotation in $annotationPerClass) {
+	#foreach($annotation in $annotationPerClass) 
 		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
 			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
 		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
@@ -67,20 +67,19 @@ private static final int PROP_SERIALIZATION_FULL = 0;
 public static final String MY_URI = #resolveURI(${class.getIRI()} $ontology);
 ## iterate over Props
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)} )
-##if($prop.getDomain().equals($class))
+#if($prop.getDomain().equals($class))
 #set($prop_var = "#propVar($prop)")
 #if(!$prop_var.isEmpty())
 public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
 #end
-##end
+#end
 #foreach( $prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if($prop.getDomain().equals($class))
 #set($state = "#propVar($prop)")
 #if(!$state.isEmpty())
 public static final String #propVar($prop) = #resolveURI(${prop.getProperty().getNamedProperty().getIRI()} $ontology);
 #end
-	
 #end
 #end
 	public #className($class)() {
