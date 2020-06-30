@@ -69,11 +69,11 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectExactCardinalityImpl;
 public class OWLAPITest {
 
 
-	//private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
+	private static final String ONT_URL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl";
 	//private static final String ONT_URL = "	http://svn.code.sf.net/p/oae/code/trunk/src/ontology/CTCAE-OAEview.owl";
 	//private static final String ONT_URL = "https://raw.githubusercontent.com/EuPath-ontology/EuPath-ontology/2019-04-02/eupath.owl";
 	//private static final String ONT_URL = "http://ontology.universaal.org/Device.owl";
-	private static final String ONT_URL="https://gitlab.lst.tfo.upm.es/ebuhid/semantic-alignment/raw/master/SemanticAlignment.owl";
+	//private static final String ONT_URL="https://gitlab.lst.tfo.upm.es/ebuhid/semantic-alignment/raw/master/SemanticAlignment.owl";
 
 	static OWLOntology ontology, localOntology;
 	static OWLReasonerFactory reasonerFactory = null;

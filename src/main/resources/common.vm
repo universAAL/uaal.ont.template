@@ -107,7 +107,7 @@ $res
 #end
 ## ============ template stamp
 #macro ( templateStamp)
-Created on $date using ${project.getTemplateName()} template, version ${project.getTemplateVersion()}
+Created on $date using ${project.getMainModel().getTemplateName()} template, version ${project.getMainModel().getTemplateVersion()}
 #end
 ## ============ determine rangetype
 #macro(getRangeType $objProp)
