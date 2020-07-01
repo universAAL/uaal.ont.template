@@ -353,7 +353,7 @@ public void create() {
 ##Ontology level
 #foreach ( $a in ${ontology.getAnnotations()})
 ##$esc.getText('"') return &quot;
-getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote${a.getValue().getSignature().iterator().next().getIRI().getFragment()}$quote);
+getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote${((OWLLiteral) a.getValue()).getLiteral()}$quote);
 #end
 #foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
 addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
