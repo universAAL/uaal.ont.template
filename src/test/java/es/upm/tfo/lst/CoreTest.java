@@ -34,7 +34,7 @@ public class CoreTest {
 	private final String uaal_device ="http://ontology.universaal.org/Device.owl";
 	private final String uaal_lightning ="http://ontology.universaal.org/Lighting.owl";
 	private final String uaal_health ="http://ontology.universaal.org/Health.owl";
-	
+	private final String uaal_activage_core="http://ontologies.activageproject.eu/activage-core.owl";
 	
 	private final String baseOutput="target/generated/";
 	private OWLOntologyManager ontManager;
@@ -59,10 +59,10 @@ public class CoreTest {
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"pizza/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
-				this.genPro.setVariable("mavenArtifactID","test");
+				this.genPro.setVariable("mavenArtifactID","PizzaOntologyUAALTemplate");
 				File f = new File(this.baseOutput+"pizza/");
 				f.mkdirs();
-				genPro.process();
+				//genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -83,10 +83,10 @@ public class CoreTest {
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"lightning/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
-				this.genPro.setVariable("mavenArtifactID","test");
+				this.genPro.setVariable("mavenArtifactID","LightningOntologyUAALTemplate");
 				File f = new File(this.baseOutput+"lightning/");
 				f.mkdirs();
-				genPro.process();
+				//genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -106,10 +106,10 @@ public class CoreTest {
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"device/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
-				this.genPro.setVariable("mavenArtifactID","test");
+				this.genPro.setVariable("mavenArtifactID","DeviceUAALTemplate");
 				File f = new File(this.baseOutput+"device/");
 				f.mkdirs();
-				genPro.process();
+				//genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -120,7 +120,6 @@ public class CoreTest {
 
 	@Test
 	public void HealthTest() {
-		
 		 try {
 			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
 				this.genPro.setMainModel(this.model);
@@ -129,8 +128,30 @@ public class CoreTest {
 				//set output directory
 				this.genPro.setOutputFolder(this.baseOutput+"health/");
 				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
-				this.genPro.setVariable("mavenArtifactID","test");
+				this.genPro.setVariable("mavenArtifactID","HealthUAALTemplate");
 				File f = new File(this.baseOutput+"health/");
+				f.mkdirs();
+				//genPro.process();
+		} catch (Exception e) {
+			e.printStackTrace();
+			genPro.addError(e);
+		}
+
+		assertTrue(genPro.getErrors().isEmpty());
+	}
+	@Test
+	public void ActivageCoreTest() {
+		
+		 try {
+			 	this.model=this.parser.generateXMLCoordinator("src/main/resources/MavenProject.xml");
+				this.genPro.setMainModel(this.model);
+				//set the ontology to project and recursive state
+				this.genPro.addOntology(this.ontologyLoader.loadOntology(this.uaal_activage_core), true);
+				//set output directory
+				this.genPro.setOutputFolder(this.baseOutput+"activageCore/");
+				//optional: add value to variables. You can add extra variable plus the variables provided into XML file
+				this.genPro.setVariable("mavenArtifactID","ActivageCoreUAALTemplate");
+				File f = new File(this.baseOutput+"activageCore/");
 				f.mkdirs();
 				genPro.process();
 		} catch (Exception e) {
