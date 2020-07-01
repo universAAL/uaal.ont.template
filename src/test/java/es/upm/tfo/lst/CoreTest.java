@@ -62,7 +62,7 @@ public class CoreTest {
 				this.genPro.setVariable("mavenArtifactID","PizzaOntologyUAALTemplate");
 				File f = new File(this.baseOutput+"pizza/");
 				f.mkdirs();
-				//genPro.process();
+				genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -86,7 +86,7 @@ public class CoreTest {
 				this.genPro.setVariable("mavenArtifactID","LightningOntologyUAALTemplate");
 				File f = new File(this.baseOutput+"lightning/");
 				f.mkdirs();
-				//genPro.process();
+				genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -109,7 +109,7 @@ public class CoreTest {
 				this.genPro.setVariable("mavenArtifactID","DeviceUAALTemplate");
 				File f = new File(this.baseOutput+"device/");
 				f.mkdirs();
-				//genPro.process();
+				genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
@@ -131,7 +131,7 @@ public class CoreTest {
 				this.genPro.setVariable("mavenArtifactID","HealthUAALTemplate");
 				File f = new File(this.baseOutput+"health/");
 				f.mkdirs();
-				//genPro.process();
+				genPro.process();
 		} catch (Exception e) {
 			e.printStackTrace();
 			genPro.addError(e);
