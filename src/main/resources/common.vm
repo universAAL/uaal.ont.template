@@ -30,10 +30,10 @@ ${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().t
 ## =========== Make First Letter of a string uppercase
 #macro( toFirstUpperCase $str)
 #if( $str.length() > 0)
-${str.substring(0, 1).toUpperCase()}##
+${str.substring(0, 1).replaceAll("[^\p{L}]", "_").toUpperCase()}##
 #end
 #if( $str.length() > 1)
-${str.substring(1)}##
+${str.substring(1).replaceAll("[^\p{L}]", "_")}##
 #end
 #end
 ## =========== Remove any possible extension
