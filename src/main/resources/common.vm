@@ -25,7 +25,7 @@
 #end
 ## =========== get the package for the ontology
 #macro(package $ontology)##
-${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase()}##
+${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().replaceAll("[^\p{L}]", "_")}##
 #end
 ## =========== Make First Letter of a string uppercase
 #macro( toFirstUpperCase $str)
