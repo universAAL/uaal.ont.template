@@ -39,7 +39,7 @@ ${str.substring(0, 1).replaceAll("[^\p{L}\d]", "_").toUpperCase()}##
 ${str.substring(1).replaceAll("[^\p{L}\d]", "_")}##
 #end
 ## Add "_" if the class name is potentially overlapping with critical java.lang classes
-#if ($str.equalsIgnoreCase("Boolean") || $str.equalsIgnoreCase("Byte") || $str.equalsIgnoreCase("Character") || $str.equalsIgnoreCase("Class") || $str.equalsIgnoreCase("Double") || $str.equalsIgnoreCase("Enum") || $str.equalsIgnoreCase("Float") || $str.equalsIgnoreCase("Integer") || $str.equalsIgnoreCase("Long") || $str.equalsIgnoreCase("Math") || $str.equalsIgnoreCase("Number") || $str.equalsIgnoreCase("Object") || $str.equalsIgnoreCase("Short") || $str.equalsIgnoreCase("$string") || $str.equalsIgnoreCase("Void") )
+#if ($str.equalsIgnoreCase("Ontology") ||$str.equalsIgnoreCase("Boolean") || $str.equalsIgnoreCase("Byte") || $str.equalsIgnoreCase("Character") || $str.equalsIgnoreCase("Class") || $str.equalsIgnoreCase("Double") || $str.equalsIgnoreCase("Enum") || $str.equalsIgnoreCase("Float") || $str.equalsIgnoreCase("Integer") || $str.equalsIgnoreCase("Long") || $str.equalsIgnoreCase("Math") || $str.equalsIgnoreCase("Number") || $str.equalsIgnoreCase("Object") || $str.equalsIgnoreCase("Short") || $str.equalsIgnoreCase("$string") || $str.equalsIgnoreCase("Void") )
 _##
 #end
 #end
@@ -118,10 +118,9 @@ Created on $date using ${project.getMainModel().getTemplateName()} template, ver
 #end
 ## ============ determine rangetype
 #macro(getRangeType $objProp)
-
+##TODO
 #end
 ## ============ get cardinality
 #macro(getCardinality $objProp)
 ##set($casted = $someObject.class.forName('target.class.name').cast($sourceObject))
-
 #end
