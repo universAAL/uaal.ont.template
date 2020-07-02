@@ -18,13 +18,13 @@ import org.universAAL.middleware.owl.*;
 #end
 #end
 #set( $comments = [])
-	#foreach($annotation in $annotationPerClass) 
-		#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
-			#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
-		#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
- 			#set($exec = ${comments.add("${annotation.getValue()}.")})
-		#end
-	#end
+#foreach($annotation in $annotationPerClass) 
+#if( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#label")
+#set($exec = ${comments.add(0,"${annotation.getValue()}.")})
+#elseif( ${annotation.getProperty().getIRI()} == "http://www.w3.org/2000/01/rdf-schema#comment")
+#set($exec = ${comments.add("${annotation.getValue()}.")})
+#end
+#end
 #foreach( $comment in $comments)
  * $comment
 #end
@@ -103,8 +103,7 @@ public static final String #propVar($prop) = #resolveURI(${prop.getProperty().ge
 	 *  Refer to their javadoc to see what they mean.
 	 */
 	public int getPropSerializationType(String propURI) {
-## TODO iterate over props, checking if propURI is one of the class props
-## Else call super
+## TODO iterate over props, checking if propURI is one of the class props Else call super
 		return PROP_SERIALIZATION_FULL;
 	}
 
@@ -208,11 +207,11 @@ public ${rangeType}[] get$propName() {
 	}
 #end
 #set($maxCardinality=0)
-
 #set($rangeType ="ManagedIndividual")
 ## Iterate over Property Getters and Setters
 #foreach( $prop in ${ontology.getAxioms($AxiomType.OBJECT_PROPERTY_DOMAIN)})
 	#if(${prop.getDomain().equals($class)})
+	
 		#set( $propName = "${prop.getProperty().getNamedProperty().getIRI().getFragment()}")
 		#set( $propName = "#toFirstUpperCase($propName)")
 		## TODO determine max cardinality (including Exact)
@@ -229,12 +228,10 @@ public ${rangeType}[] get$propName() {
 			#propList($propName $rangeType "#propVar($prop)")
 		#end
 	#end
-	
 #end
-
-
 #foreach( $data_prop in ${ontology.getAxioms($AxiomType.DATA_PROPERTY_DOMAIN)})
 #if(${data_prop.getDomain().equals($class)})
+
 		## TODO determine max cardinality
 		## TODO determine rangeType
 		##set ($ragneType = "Object")
@@ -264,8 +261,7 @@ public ${rangeType}[] get$propName() {
 			//DATA_PROPERTY_DOMAIN propList $data_prop "#propVar($data_prop)"
 			#propList($propName $rangeType "#propVar($data_prop)")
 		#end
-	#end
 #end
-
+#end
 
 }
