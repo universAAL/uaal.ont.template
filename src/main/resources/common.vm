@@ -25,15 +25,22 @@
 #end
 ## =========== get the package for the ontology
 #macro(package $ontology)##
-${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().replaceAll("[^\p{L}]", "_")}##
+${PackageBase}.${ontology.getOntologyID().getOntologyIRI().get().getFragment().toLowerCase().replaceAll("[^\p{L}\d]", "_")}##
 #end
 ## =========== Make First Letter of a string uppercase
 #macro( toFirstUpperCase $str)
+#if(($str.charAt(0) >= '0' && $str.charAt(0) <= '9'))
+_##
+#end
 #if( $str.length() > 0)
-${str.substring(0, 1).replaceAll("[^\p{L}]", "_").toUpperCase()}##
+${str.substring(0, 1).replaceAll("[^\p{L}\d]", "_").toUpperCase()}##
 #end
 #if( $str.length() > 1)
-${str.substring(1).replaceAll("[^\p{L}]", "_")}##
+${str.substring(1).replaceAll("[^\p{L}\d]", "_")}##
+#end
+## Add "_" if the class name is potentially overlapping with critical java.lang classes
+#if ($str.equalsIgnoreCase("Boolean") || $str.equalsIgnoreCase("Byte") || $str.equalsIgnoreCase("Character") || $str.equalsIgnoreCase("Class") || $str.equalsIgnoreCase("Double") || $str.equalsIgnoreCase("Enum") || $str.equalsIgnoreCase("Float") || $str.equalsIgnoreCase("Integer") || $str.equalsIgnoreCase("Long") || $str.equalsIgnoreCase("Math") || $str.equalsIgnoreCase("Number") || $str.equalsIgnoreCase("Object") || $str.equalsIgnoreCase("Short") || $str.equalsIgnoreCase("$string") || $str.equalsIgnoreCase("Void") )
+_##
 #end
 #end
 ## =========== Remove any possible extension
