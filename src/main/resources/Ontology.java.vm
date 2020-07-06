@@ -3,10 +3,13 @@
 #license()
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
-#if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM || $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
+#if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM)
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote, #toTypeRestriction(${classExpression.getFiller()})##
+#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
 new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote,#toRestriction( ${classExpression.getFiller()}))##
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
+#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM)
+new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toTypeRestriction(${classExpression.getFiller()})##
+#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
 new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
@@ -17,33 +20,36 @@ new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$qu
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MAX_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MAX_CARDINALITY)
 new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
-#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE
-		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
-new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, Object)##TODO
+#elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE)
+new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, #fromLiteral(${ClassExpressionType.getValue()}))##
+#elseif ($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
+new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, #fromIndividual(${ClassExpressionType.getValue()}))##
+#elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ONE_OF)
+new Enumeration( new Object [] {##
+#foreach( $literal in ${classExpression.getIndividuals()})
+#fromIndividual($literal), ##
+#end
+})
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_COMPLEMENT_OF)
 new Complement( #toRestriction( ${classExpression.getOperand()}))##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_INTERSECTION_OF)
-new Intersection() {{##
+new Intersection() ##
 #foreach( $operand in ${classExpression.getOperands()})
-.addType( #toRestriction ($operand)) ##TODO!!!
+.of( #toRestriction ($operand))##
 #end
-}}##
-
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_UNION_OF)
 new Union()##
 #foreach( $operand in ${classExpression.getOperands()})
-.of(#toRestriction($operand)) ##TODO!!!
+.of(#toRestriction($operand))##
 #end
-##
 #elseif( $classExpression.getClassExpressionType() == $ClassExpressionType.OWL_CLASS)
+##TODO: Resolve to NameSpace?
 TypeURI.asTypeURI($quote${classExpression.getIRI()}$quote)##
-#end
-#end
-## ============= build union object (double-brackets initialization is not working)
-#macro(buindUion $classExpression)
-u = new Union();
-#foreach( $operand in ${classExpression.getOperands()})
-u.addType( #toRestriction ($operand)); ##TODO!!!
+#else
+## NOT IMPLEMENTED IN UAAL: 
+## 		OBJECT_HAS_SELF
+
+#include("NullTypeExpression.vm")
 #end
 #end
 ## ============= Data Range to Type Restriction
@@ -51,25 +57,29 @@ u.addType( #toRestriction ($operand)); ##TODO!!!
 #if(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_COMPLEMENT_OF})
 new Complement( #toTypeRestriction( ${dataRange.getDataRange()}))
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_INTERSECTION_OF})
-new Intersection() {{
+new Intersection()
 #foreach( $operand in ${dataRange.getOperands()})
-.addType( #toTypeExpression($operand)); ##TODO!!!
+.of( #toTypeExpression($operand))##
 #end
-}}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_UNION_OF})
-new Union() {{
+new Union()
 #foreach( $operand in ${dataRange.getOperands()})
-addType( #toTypeExpression($operand)); ##TODO!!!
+.of( #toTypeExpression($operand))
 #end
-}}
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATA_ONE_OF})
-new Enumeration( new Object [] {
+new Enumeration( new Object [] {##
 #foreach( $literal in ${dataRange.getValues()})
-#fromLiteral($literal), ##TODO!!!
+#fromLiteral($literal), ##
 #end
 })
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATATYPE})
-new TypeURI("${dataRange.getBuiltInDatatype()}", true);
+#if($dataRange.isDatatype())
+TypeURI.asTypeURI($quote${dataRange.getBuiltInDatatype()}$quote,true)##
+#else
+##TODO Load the Datatype as its restrictions (uAAL does not have named Datatypes)
+
+#include("NullTypeExpression.vm")
+#end
 #elseif(${dataRange.getDataRangeType()} == ${DataRangeType.DATATYPE_RESTRICTION})
 #set( $minRestric = [])
 #set( $maxRestric = [])
@@ -122,7 +132,7 @@ new StringRestriction()##inline methods in StringRestriction
 .minLength(${minLength.get(0)})#end
 #if($maxLength.size() ==1)
 .maxLength(${maxLength.get(0)})#end
-	#elseif(${dataRange.getDataType().getBuiltInDatatype()} == ${OWL2Datatype.XSD_BASE_64_BINARY})
+#elseif(${dataRange.getDataType().getBuiltInDatatype()} == ${OWL2Datatype.XSD_BASE_64_BINARY})
 ##Check Base64
 new Base64Restriction() ##inline methods in Base64Restriction
 #if($exactLength.size()==1)
@@ -131,7 +141,7 @@ new Base64Restriction() ##inline methods in Base64Restriction
 .minLength(${minLength.get(0)})#end
 #if($maxLength.size() ==1)
 .maxLength(${maxLength.get(0)})#end
-	#elseif(${dataRange.getDataType().getBuiltInDatatype()} == ${OWL2Datatype.XSD_ANY_URI})
+#elseif(${dataRange.getDataType().getBuiltInDatatype()} == ${OWL2Datatype.XSD_ANY_URI})
 ##Check AnyURI
 new URIRestriction() ##inline methods in URIRestriction
 #if($exactLength.size()==1)
@@ -140,9 +150,70 @@ new URIRestriction() ##inline methods in URIRestriction
 .minLength(${minLength.get(0)})#end
 #if($maxLength.size() ==1)
 .maxLength(${maxLength.get(0)})#end
-##XXX: When others become available, add
-	#end
 #end
+#else
+##XXX: When others become available, add
+
+#include("NullTypeExpression.vm")
+#end
+#end
+## =============== Create object from Data Literal
+#macro( fromLiteral $literal)
+#if($literal.isBoolean())
+Boolean.valueOf(${literal.parseBoolean()})##
+#elseif($literal.isDouble())
+Double.valueOf(${literal.parseDouble()})##
+#elseif($literal.isFloat())
+Float.valueOf(${literal.parseFloat()})##
+#elseif($literal.isInteger())
+Integer.valueOf(${literal.parseInteger()})##
+#elseif($literal.getDataType().isString()) ## is string
+$quote${literal.getLexical()}$quote##
+##TODO ("nonNegativeInteger", NonNegativeInteger) Maybe it is included in Integer before?
+##TODO ("decimal", BigDecimal.class) Maybe it is included in Integer before?
+#elseif($literal.getDataType().getURI().equals("http://www.w3.org/2001/XMLSchema#dateTime"))
+## ("dateTime", XMLGregorianCalendar)
+javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar($quote${literal.getLexical()}$quote)
+#elseif($literal.getDataType().getURI().equals("http://www.w3.org/2001/XMLSchema#duration"))
+## ("duration", Duration)
+java.time.Duration.parse($quote${literal.getLexical()}$quote)##
+#elseif($literal.getDataType().getURI().equals("http://www.w3.org/2001/XMLSchema#language"))
+## ("language", Locale)
+java.util.Locale.forLanguageTag($quote${literal.getLexical()}$quote)##
+#elseif($literal.getDataType().getURI().equals("http://www.w3.org/2001/XMLSchema#base64Binary"))
+## ("base64Binary", Base64Binary)
+new org.universAAL.middleware.xsd.Base64Binary.Base64Binary($quote${literal.getLexical()}$quote)##
+#else
+$quote${literal.getLexical()}$quote##
+#end
+#end
+## =============== Create object from Object Individual
+#macro( fromIndividual $individual)
+#if(${individual.isAnonymous()})##is anonymous
+org.universAAL.middleware.util.InlineResource.anonymous()##
+#else
+org.universAAL.middleware.util.InlineResource.withURI(${individual.asOWLNamedIndividual().getIRI()})##
+#end
+## add types
+#foreach ( $cexp in ${EntitySearcher.getTypes($individual, $ontology)})
+#if(${cexp.asOWLClass()})
+.subTypeOf($quote${cexp.asOWLClass().getURI}$quote)## Only for named classes
+#end
+#end
+## add Data properties
+#foreach( $ent in ${EntitySearcher.getDataPropertyValues($individual, $ontology).entries()})
+#if(${ent.getKey().asOWLDataProperty()})
+.withProperty(${ent.getKey().asOWLDataProperty().getIRI()},#fromLiteral(${ent.getValue()}))## Only for named Properties
+#end
+#end
+## add Object properties
+#foreach( $ent in ${EntitySearcher.getObjectPropertyValues($individual, $ontology).entries()})
+#if(${ent.getKey().asOWLObject()})##TODO this will get stuck in cyclical references!
+.withProperty(${ent.getKey().asOWLObject().getIRI()},#fromIndividual(${ent.getValue()}))## Only for named Properties
+#end
+#end
+##withProperty(prop_uri,value)
+.specialize()
 #end
 ## =============== Create Class
 #macro( createClass $class $ontology $oci $nodefaults)
@@ -185,12 +256,12 @@ new URIRestriction() ##inline methods in URIRestriction
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
 || ${superClass.getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))
 ##filter NOT Property Class Expressions
-	##${oci}.addSuperClass(#toRestriction (${superClass})); ## TODO
+	${oci}.addSuperClass(#toRestriction (${superClass})); 
 #end
 #end
 ## if superclass not set then:
 #if ( $isSuperClassSet == "false" && !$nodefaults)
-	${oci}.addSuperClass(ManagedIndividual.MY_URI);##
+	${oci}.addSuperClass(ManagedIndividual.MY_URI);
 #end
 ## ObjectProperties
 #set($objprops = [])
@@ -278,40 +349,39 @@ new URIRestriction() ##inline methods in URIRestriction
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_MAX_CARDINALITY
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.DATA_HAS_VALUE
 || ${restriction.getSuperClass().getgetClassExpressionType()} == $ClassExpressionType.OBJECT_HAS_VALUE))## filter only Property Class Expressions
-	##${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));## TODO
+	${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${restriction.getSuperClass()}))));
 #end
 #end
 ## Restrictions defined through the ObjectProperty Range axioms
 #foreach( $prop in $objprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.OBJECT_PROPERTY_RANGE)})
-	##${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction (${a.getRange()}))); ##TODO
+	${oci}.addRestriction(new MergedRestriction().addRestriction(#toRestriction(${a.getRange()})));
 		#end
 	#end
 #end
 #foreach( $prop in $datprops)
 	#foreach( $a in ${ontology.getAxioms($prop)})
 		#if( ${a.isOfType($AxiomType.DATA_PROPERTY_RANGE)})
-	##${oci}.addRestriction(new MergedRestriction().addRestriction(
-		##toRestriction (${a.getRange()}) ##TODO: create to restriction from DataRanges
-	##));
+	${oci}.addRestriction(new MergedRestriction().addRestriction(#toTypeRestriction(${a.getRange()}) ));
 		#end
 	#end
 
 #end
 ##Check for EquivalentClass
-#foreach( $eqClass in ${EntitySearcher.getSuperClasses($class, $ontology)})
-	##${oci}.addEquivalentClass(#toRestriction(${eqClass}));
+#foreach( $eqClass in ${EntitySearcher.getEquivalentClasses($class, $ontology)})
+	${oci}.addEquivalentClass(#toRestriction(${eqClass}));
 #end
 ##Check for DisjointClass
 #foreach( $disClass in ${EntitySearcher.getDisjointClasses($class, $ontology)})
 	${oci}.addDisjointClass(#toRestriction(${disClass}));
 #end
-##TODO Check for complement class
+## TODO Check for complement class, Not such thing in OWL
 	##${oci}.setComplementClass(#toRestriction (${eqClass}));
-##TODO add Individuals (need instance creator)
-	##${oci}.addInstance(instance);
-
+## add Individuals
+#foreach( $individual in ${EntitySearcher.getIndividuals($class, $ontology)})
+	${oci}.addInstance( #fromIndividual($individual));
+#end
 #end
 package #package($ontology);
 

@@ -1,0 +1,33 @@
+	new TypeExpression() {
+		/* 
+		 * This is a null typeExpression, this is a type expression that matches and admits everything.
+		 * It is only used because the universAAL OWL expressivity is not compatible with the OWL axioms.
+		 */
+		public boolean matches(TypeExpression subset, HashMap context, int ttl, List log) {
+			return true;
+		}
+		
+		public boolean isWellFormed() {
+			return true;
+		}
+		
+		public boolean isDisjointWith(TypeExpression other, HashMap context, int ttl, List log) {
+			return false;
+		}
+		
+		public boolean hasMember(Object member, HashMap context, int ttl, List log) {
+			return true;
+		}
+		
+		public Object[] getUpperEnumeration() {
+			return new Object[0];
+		}
+		
+		public String[] getNamedSuperclasses() {
+			return new String[0];
+		}
+		
+		public TypeExpression copy() {
+			return (TypeExpression) this.clone();
+		}
+	}
