@@ -13,7 +13,7 @@ new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$qu
 new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
-new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
+new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MIN_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MIN_CARDINALITY)
 new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
@@ -192,12 +192,12 @@ $quote${literal.getLexical()}$quote##
 #if(${individual.isAnonymous()})##is anonymous
 org.universAAL.middleware.util.InlineResource.anonymous()##
 #else
-org.universAAL.middleware.util.InlineResource.withURI(${individual.asOWLNamedIndividual().getIRI()})##
+org.universAAL.middleware.util.InlineResource.withURI($quote${individual.asOWLNamedIndividual().getIRI()}$quote)##
 #end
 ## add types
 #foreach ( $cexp in ${EntitySearcher.getTypes($individual, $ontology)})
-#if(${cexp.asOWLClass()})
-.subTypeOf($quote${cexp.asOWLClass().getURI}$quote)## Only for named classes
+#if(${cexp.asOWLClass().isOWLClass()})
+.subTypeOf($quote${cexp.asOWLClass().getIRI()}$quote)## Only for named classes
 #end
 #end
 ## add Data properties
@@ -387,6 +387,8 @@ package #package($ontology);
 
 import org.universAAL.middleware.owl.*;
 import org.universAAL.middleware.rdf.*;
+import java.util.HashMap;
+import java.util.List;
 import ${PackageBase}.#ontFactory($ontology);
 
 ##TODO add javadoc
