@@ -4,22 +4,22 @@
 ##============ Class Expression to Restriction
 #macro ( toRestriction $classExpression)
 #if ($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_ALL_VALUES_FROM)
-new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote, #toTypeRestriction(${classExpression.getFiller()})##
+new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote, #toTypeRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_ALL_VALUES_FROM)
 new AllValuesFromRestriction( $quote${classExpression.getProperty().getIRI()}$quote,#toRestriction( ${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_SOME_VALUES_FROM)
-new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toTypeRestriction(${classExpression.getFiller()})##
+new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toTypeRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_SOME_VALUES_FROM)
 new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$quote,#toRestriction(${classExpression.getFiller()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_EXACT_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_EXACT_CARDINALITY)
-new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
+new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MIN_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MIN_CARDINALITY)
-new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
+new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MAX_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MAX_CARDINALITY)
-new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
+new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_HAS_VALUE)
 new HasValueRestriction($quote${classExpression.getProperty().getIRI()}$quote, #fromLiteral(${ClassExpressionType.getValue()}))##
 #elseif ($classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_HAS_VALUE)
