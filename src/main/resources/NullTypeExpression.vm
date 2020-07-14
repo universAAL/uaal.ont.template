@@ -28,6 +28,11 @@
 		}
 		
 		public TypeExpression copy() {
-			return (TypeExpression) this.clone();
+			try {
+				return (TypeExpression) this.clone();
+			}
+			catch(Exception e) {
+ 			 return this;
+			}
 		}
 	}
