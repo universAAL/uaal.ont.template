@@ -16,7 +16,7 @@ new SomeValuesFromRestriction($quote${classExpression.getProperty().getIRI()}$qu
 new ExactCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MIN_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MIN_CARDINALITY)
-new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
+new MinCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()})##
 #elseif($classExpression.getClassExpressionType() == $ClassExpressionType.DATA_MAX_CARDINALITY
 		|| $classExpression.getClassExpressionType() == $ClassExpressionType.OBJECT_MAX_CARDINALITY)
 new MaxCardinalityRestriction($quote${classExpression.getProperty().getIRI()}$quote, ${classExpression.getCardinality()}))##
@@ -413,7 +413,18 @@ public #ontClassName($ontology)() {
 public void create() {
 ##Ontology level
 #foreach ( $a in ${ontology.getAnnotations()})
-	getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote$esc.java(${a.getValue().getLiteral()}).replaceAll("\\/","/")$quote);
+	#if(${a.getValue().isLiteral()})
+		getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote$esc.java(${a.getValue().asLiteral().get().getLiteral()}).replaceAll("\\/","/")$quote);
+	#elseif(${a.getValue().isAnonymous()}) 
+		getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote$esc.java(${a.getValue().asAnonymousIndividual().get().toString()}).replaceAll("\\/","/")$quote);
+	#elseif(${a.getValue().isBottomEntity()})
+	#elseif(${a.getValue().isIndividual()})
+	#elseif(${a.getValue().isIRI()})
+			getInfo().addToProperty($quote${a.getProperty().getIRI()}$quote,$quote$esc.java(${a.getValue().asIRI().toString()}).replaceAll("\\/","/")$quote);
+	#elseif(${a.getValue().isTopEntity()})
+	#else
+	#end
+	
 #end
 #foreach( $import in ${ontology.getImports()}) ##XXX resolve NameSpace?
 	addImport("${import.getOntologyID().getOntologyIRI().get().getNamespace()}");
