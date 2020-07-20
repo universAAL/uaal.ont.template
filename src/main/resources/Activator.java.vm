@@ -22,7 +22,7 @@ public class Activator implements ModuleActivator {
 
 	public void start(ModuleContext context) throws Exception {
 		OntologyManagement om = OntologyManagement.getInstance();
-		#foreach($ont in ${project.getOntologies()}) ##TODO: Determine the proper order to register ontologies!!!
+		#foreach($ont in ${project.getOntologies()})
 		om.register(context, #ontClassName($ontology).toLowerCase());
 		#end
 	}

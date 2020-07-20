@@ -36,7 +36,7 @@
             <Bundle-Name>#[[${project.name}]]#</Bundle-Name>
             <Bundle-Description>#[[${project.description}]]#</Bundle-Description>
             <Bundle-SymbolicName>#[[${project.artifactId}]]#</Bundle-SymbolicName>
-            #parse('common.vm')
+            #parse('common.vm')#
             <Export-Package>#foreach($ont in ${project.getOntologies()})
 			#package($ont),
 			#end</Export-Package>
